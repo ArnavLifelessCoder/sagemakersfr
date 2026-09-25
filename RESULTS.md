@@ -28,7 +28,7 @@ words are missing from the transliteration table.
 - Kaggle: predict-only, 115 min on 4 CPUs; official validator PASS
 - Model validation F0.5 (Kaggle v1 training): 0.9883
 - Thresholds: India 0.9707 (calibrated from 0.75), US 0.75, France 0.75
-- Leaderboard (public): _pending_
+- Leaderboard (public): **0.934** (+0.023 over v1: confirms the India over-matching diagnosis)
 
 | country | S1 | matches / S1 | singletons |
 |---|---|---|---|
