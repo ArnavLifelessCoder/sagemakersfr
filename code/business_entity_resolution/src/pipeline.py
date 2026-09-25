@@ -30,12 +30,12 @@ import pandas as pd
 from . import model as M
 from .blocking import iter_candidates
 from .data import read_sources, read_ground_truth, gt_pairs, write_id_lists
-from .features import cheap_features, python_features, add_context
+from .features import cheap_features, python_features, add_context, anchor_features
 from .prep import parse_frame, learn_translit, extend_translit
 
 T0 = time.time()
 DEFAULT_CFG = dict(k_block=10, k_keep=5, threads=-1, workers=os.cpu_count() or 4, train_frac=0.25,
-                   val_pct=20, seed=0, rounds=3000, s1_recall=0.9995, refit_full=False)
+                   val_pct=20, seed=0, rounds=3000, s1_recall=0.9995, refit_full=False, lex_drop=0.4)
 
 
 def log(*a):
@@ -90,21 +90,49 @@ def block_and_cheap(s1, q, cfg, stage1=None):
     return cand, F1, p1
 
 
-def stage2_features(cand, F1, p1, s1, q, cfg):
-    """Full feature frame for stage 2. Returns (F, extra, miss)."""
+def stage2_features(cand, F1, p1, s1, q, cfg, anc=None, vocabs=None):
+    """Full feature frame for stage 2. Returns (F, extra, miss).
+
+    anc: precomputed anchor features for these rows (needed when scoring in slices, because
+    anchors must see every candidate of an S1). vocabs: {country: (s1 vocab, n, q vocab, n)}."""
     py, extra, miss = python_features(cand, s1, q, workers=cfg["workers"])
     F = pd.concat([F1.reset_index(drop=True), py.reset_index(drop=True)], axis=1)
     ctry = s1.country.values[cand.si.values]
+    vocabs = vocabs or country_vocabs(s1, q)
     arr = np.zeros((len(F), len(M.VOCAB_FEATS)), np.float32)
+    mod = np.zeros((len(F), len(M.MOD_FEATS)), np.float32)
     for c in np.unique(ctry):
-        voc = M.name_vocab(s1.name_core.values[s1.country.values == c])
+        sv, ns, qv, nq = vocabs[c]
         mk = ctry == c
-        arr[mk] = M.vocab_features(extra[mk], miss[mk], *voc)
+        arr[mk] = M.vocab_features(extra[mk], miss[mk], sv, ns)
+        mod[mk] = M.modifier_features(extra[mk], miss[mk], sv, ns, qv, nq)
     for k, col in enumerate(M.VOCAB_FEATS):
         F[col] = arr[:, k]
+    for k, col in enumerate(M.MOD_FEATS):
+        F[col] = mod[:, k]
     F["p1"] = p1
-    add_context(F, cand, score=p1, prefix="p1_")
+    if anc is None:
+        anc = group_features(cand, p1, F1, s1, q, cfg)
+    for col in anc.columns:
+        F[col] = anc[col].values
     return F, extra, miss
+
+
+def group_features(cand, p1, F1, s1, q, cfg):
+    """Features that depend on all candidates of a query / an S1 (compute on the full set)."""
+    g = anchor_features(cand, p1, F1.n_tsort.values, s1, q, workers=cfg["workers"])
+    add_context(g, cand, score=p1, prefix="p1_")
+    return g
+
+
+def country_vocabs(s1, q):
+    """Token document frequencies of core names, per country, for S1 and for S2/S3."""
+    out = {}
+    for c in np.unique(s1.country.values):
+        sv, ns = M.name_vocab(s1.name_core.values[s1.country.values == c])
+        qv, nq = M.name_vocab(q.name_core.values[q.country.values == c])
+        out[c] = (sv, ns, qv, nq)
+    return out
 
 
 # ----------------------------------------------------------------------------
@@ -233,7 +261,7 @@ def cmd_train(a):
     hard = F.n_tset.values >= 80
     trn = ~is_val
     Ftr = F[trn].copy()
-    M.oof_lexicon_features(Ftr, extra[trn], miss[trn], y[trn], grp[trn], hard[trn])
+    M.oof_lexicon_features(Ftr, extra[trn], miss[trn], y[trn], grp[trn], hard[trn], drop_neg=cfg["lex_drop"])
     lex = M.learn_lexicon(extra[trn], miss[trn], y[trn], hard[trn])
     Fv = F[is_val].copy()
     M.add_lex(Fv, extra[is_val], miss[is_val], lex)
@@ -268,7 +296,7 @@ def cmd_train(a):
         f" (ratio {n_pred / max(1, n_true):.4f}) -> calibration target {target_mps:.3f}")
     if cfg["refit_full"]:
         Fall = F.copy()
-        M.oof_lexicon_features(Fall, extra, miss, y, grp, hard)
+        M.oof_lexicon_features(Fall, extra, miss, y, grp, hard, drop_neg=cfg["lex_drop"])
         lex = M.learn_lexicon(extra, miss, y, hard)
         bst2 = M.train_lgb(Fall[feats2].values.astype(np.float32), y, rounds=int(best_it * 1.15))
     bst1.save_model(os.path.join(a.work, "stage1.txt"))
@@ -315,11 +343,14 @@ def cmd_predict(a):
         cand, F1, p1 = block_and_cheap(s1, q, cfg, stage1=stage1)
         log(country, "candidate pairs after stage 1:", len(cand))
         p2 = np.zeros(len(cand), np.float32)
+        anc = group_features(cand, p1, F1, s1, q, cfg)
+        vocabs = country_vocabs(s1, q)
         step = 3_000_000
         for st in range(0, len(cand), step):
             sl = slice(st, st + step)
             F, extra, miss = stage2_features(cand.iloc[sl].reset_index(drop=True),
-                                             F1.iloc[sl].reset_index(drop=True), p1[sl], s1, q, cfg)
+                                             F1.iloc[sl].reset_index(drop=True), p1[sl], s1, q, cfg,
+                                             anc=anc.iloc[sl], vocabs=vocabs)
             M.add_lex(F, extra, miss, lex)
             p2[sl] = bst2.predict(F[feats2].values.astype(np.float32), num_threads=cfg["threads"])
             del F, extra, miss

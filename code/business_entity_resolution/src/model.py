@@ -58,8 +58,12 @@ def add_lex(f, extra, miss, lex):
         f[c] = arr[:, k]
 
 
-def oof_lexicon_features(f, extra, miss, y, groups, hard_mask, n_folds=2, seed=0):
-    """Out-of-fold lexicon features for training rows (grouped by S1 id)."""
+def oof_lexicon_features(f, extra, miss, y, groups, hard_mask, n_folds=2, seed=0, drop_neg=0.0):
+    """Out-of-fold lexicon features for training rows (grouped by S1 id).
+
+    drop_neg: share of distractor-like (negative) lexicon entries hidden in each fold, so the
+    model also learns to decide on words the lexicon does not know (new/foreign modifiers),
+    using the label-free modifier features instead."""
     rng = np.random.RandomState(seed)
     ug = pd.unique(groups)
     fold_of = dict(zip(ug, rng.randint(0, n_folds, len(ug))))
@@ -68,6 +72,10 @@ def oof_lexicon_features(f, extra, miss, y, groups, hard_mask, n_folds=2, seed=0
     for k in range(n_folds):
         tr = folds != k
         lex = learn_lexicon(extra[tr], miss[tr], y[tr], hard_mask[tr])
+        if drop_neg > 0:
+            for kind in lex:
+                lex[kind] = {t: v for t, v in lex[kind].items()
+                             if not (v < 0 and not t.startswith("L:") and rng.rand() < drop_neg)}
         te = np.flatnonzero(~tr)
         arr[te] = lex_features(extra[te], miss[te], lex)
     for k, c in enumerate(LEX_FEATS):
@@ -118,6 +126,47 @@ def vocab_features(extra, miss, vocab, n_docs, common=1e-4):
             else:
                 nm = nv
         out[i, 8] = float(ne > 0 and nm > 0)
+    return out
+
+
+MOD_FEATS = ["ex_mod_max", "ex_mod_n", "ex_qdf_max", "mi_mod_max", "mi_s1df_max", "mod_substitution"]
+
+
+def modifier_features(extra, miss, s_vocab, n_s, q_vocab, n_q, min_q=30, mod_ratio=3.0):
+    """Label-free 'distractor word' evidence, computed on the data being scored.
+
+    Distractor generators append/swap modifier words ("eastgate", "holding", "groupe", "bakery")
+    that are far more frequent in S2/S3 names than in S1 names; typos are rare everywhere.
+    ratio(t) = log( (dfQ(t)/nQ + e) / (dfS1(t)/nS1 + e) ), only for tokens with dfQ >= min_q.
+    """
+    out = np.zeros((len(extra), len(MOD_FEATS)), np.float32)
+    eps = 1.0 / max(n_s, 1)
+    lr = math.log(mod_ratio)
+    for i, (e, m) in enumerate(zip(extra, miss)):
+        best = 0.0
+        n_mod = 0
+        qmax = 0.0
+        for t in (e.split() if e else ()):
+            if t.startswith("L:"):
+                continue
+            dq = q_vocab.get(t, 0)
+            qmax = max(qmax, math.log1p(dq))
+            if dq < min_q:
+                continue
+            r = math.log((dq / n_q + eps) / (s_vocab.get(t, 0) / n_s + eps))
+            best = max(best, r)
+            n_mod += r > lr
+        mbest = 0.0
+        smax = 0.0
+        for t in (m.split() if m else ()):
+            if t.startswith("L:"):
+                continue
+            ds = s_vocab.get(t, 0)
+            smax = max(smax, math.log1p(ds))
+            dq = q_vocab.get(t, 0)
+            if dq >= min_q:
+                mbest = max(mbest, math.log((dq / n_q + eps) / (ds / n_s + eps)))
+        out[i] = (best, n_mod, qmax, mbest, smax, float(n_mod > 0 and smax >= math.log1p(min_q)))
     return out
 
 

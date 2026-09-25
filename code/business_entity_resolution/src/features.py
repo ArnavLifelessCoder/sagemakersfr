@@ -204,6 +204,72 @@ def compute_features(cand, s1, q, workers=None, chunk=50000):
     return pd.concat([f, py], axis=1), extra, miss
 
 
+ANCHOR_FEATS = ["anc_p1", "anc_strong", "anc_hn_eq_q", "anc_hn_eq_s", "anc_name_q", "anc_nums_jacc_q",
+                "s_n_strong", "s_strong_hn_q", "s_strong_hn_s", "q_is_anchor"]
+
+
+def anchor_features(cand, p1, n_tsort, s1, q, workers=None, strong=0.5):
+    """Cluster-consistency evidence for (q, s): compare q with the best *other* candidate of s.
+
+    Sibling distractors disagree with the S1's real records (other house number, extra word) and
+    often agree with each other; a singleton S1 has no strong anchor at all.
+    """
+    workers = workers or (os.cpu_count() or 2)
+    n = len(cand)
+    si = cand.si.values
+    qi = cand.qi.values
+    score = p1 + 1e-4 * n_tsort
+    order = np.lexsort((-score, si))
+    s_sorted = si[order]
+    first = np.r_[True, s_sorted[1:] != s_sorted[:-1]]
+    grp_start = np.maximum.accumulate(np.where(first, np.arange(n), 0))
+    rank = np.arange(n) - grp_start
+    top1 = np.full(n, -1)
+    top2 = np.full(n, -1)
+    top1_of = {}
+    top2_of = {}
+    for pos in np.flatnonzero(rank <= 1):
+        (top1_of if rank[pos] == 0 else top2_of)[s_sorted[pos]] = order[pos]
+    top1 = np.array([top1_of.get(s, -1) for s in si])
+    top2 = np.array([top2_of.get(s, -1) for s in si])
+    anc = np.where(top1 == np.arange(n), top2, top1)
+    has = anc >= 0
+    a = np.where(has, anc, 0)
+    q_hn = q["hn"].values[qi]
+    a_hn = q["hn"].values[qi[a]]
+    s_hn = s1["hn"].values[si]
+    out = np.zeros((n, len(ANCHOR_FEATS)), np.float32)
+    out[:, 0] = np.where(has, p1[a], 0)
+    out[:, 1] = (has & (p1[a] >= strong)).astype(np.float32)
+    out[:, 2] = np.where(has & (q_hn != "") & (a_hn != ""), (q_hn == a_hn).astype(np.float32), -1)
+    out[:, 3] = np.where(has & (s_hn != "") & (a_hn != ""), (s_hn == a_hn).astype(np.float32), -1)
+    qn = q["name_core"].values[qi]
+    an = q["name_core"].values[qi[a]]
+    out[:, 4] = np.where(has, process.cpdist(qn, an, scorer=fuzz.token_sort_ratio, workers=workers), -1)
+    qnum = q["nums"].values[qi]
+    anum = q["nums"].values[qi[a]]
+    jac = np.full(n, -1.0, np.float32)
+    for i in np.flatnonzero(has):
+        x, y = qnum[i], anum[i]
+        if x or y:
+            sx, sy = set(x.split()), set(y.split())
+            jac[i] = len(sx & sy) / len(sx | sy)
+    out[:, 5] = jac
+    st = p1 >= strong
+    d = pd.DataFrame({"si": si, "hn": q_hn, "st": st.astype(np.int32)})
+    n_st = d.groupby("si").st.transform("sum").values - st
+    d["key"] = d.si.astype(str) + "|" + d.hn
+    same_hn_st = d.groupby("key").st.transform("sum").values - st
+    out[:, 6] = n_st
+    out[:, 7] = np.where((n_st > 0) & (q_hn != ""), same_hn_st / np.maximum(n_st, 1), -1)
+    d2 = pd.DataFrame({"key": pd.Series(si).astype(str).values + "|" + s_hn})
+    cnt = d.groupby("key").st.sum()
+    s_same = d2.key.map(cnt).fillna(0).values - (st & (q_hn == s_hn))
+    out[:, 8] = np.where((n_st > 0) & (s_hn != ""), s_same / np.maximum(n_st, 1), -1)
+    out[:, 9] = (top1 == np.arange(n)).astype(np.float32)
+    return pd.DataFrame(out, columns=ANCHOR_FEATS, index=cand.index)
+
+
 def add_context(f, cand, score=None, prefix=""):
     """Features describing competition among candidates of the same query / same S1."""
     if score is None:
