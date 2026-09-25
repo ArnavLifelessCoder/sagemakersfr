@@ -1,0 +1,14 @@
+# challenge data / large artefacts must never be committed
+*.zip
+*.tsv
+*.parquet
+*.pkl
+*.docx
+dataset/
+student_resource/
+dev/
+art*/
+artifacts/
+output/
+__pycache__/
+*.pyc
