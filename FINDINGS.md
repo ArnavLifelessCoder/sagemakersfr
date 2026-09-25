@@ -117,46 +117,102 @@ Top features: `p1_q_gap` (margin over the query's next-best S1), `p1`, lexicon f
 `legal_q_only`, `hn_logdiff`, `hn_rel`. The most distractor-like lexicon token is `L:pvt`
 (losing "Private").
 
-Caveats: the dev slice is small and regional, and France is untested. **No leaderboard submission yet.**
-The official validator passes on a dev-sized run.
+Caveats: the dev slice is small and regional, and France is not covered. **The first leaderboard
+submission scored 0.911 (see §5): dev validation did NOT reflect the test distribution.**
 
 Remaining error types (dev validation): FPs are mostly distractors with a legal change plus a truncated
 or nearby number, or an identical name with an empty address. FNs are mostly empty addresses with a weakened
 name ("Swati Limited Center"), random renamed records whose address is also noisy, and native-script
 names with sparse addresses.
 
-## 5. Running it on Kaggle
+## 5. Leaderboard reality check: the train → test shift (EDA after v1 = 0.911)
+
+v1 scored **0.911** on the public LB against 0.9907 on dev validation. The leader was at 0.9859.
+Scripts are in `experiments/diag/`.
+
+**5.1 The generator is identical across countries, but test has more distractors.**
+- Training truth has *exactly* the same cluster shape in US and India: mean 1.67 S2 + 1.79 S3 matches per S1,
+  the same (nS2, nS3) mix, and 5.6% singletons.
+- Records per S1: train about 4.68 (S2 2.28 + S3 2.40), **test about 5.5–5.8 (S2 2.7–2.9 + S3 2.8–3.0) in all
+  three countries**, i.e. about 1.1 extra records per S1.
+- Distractor "marker" words are about **1.7× more frequent in test S2/S3** than in train S2/S3, at identical
+  S1 rates. US: eastgate/southside 51 vs 30 per 10k names, holdings 344 vs 235. India: bakery/pharmacy/hardware
+  about 12 vs 7.5 per 10k. So test holds about 1.7× more sibling distractors per S1, and probabilities
+  calibrated on training odds over-accept on test.
+
+**5.2 v1 predictions vs the training cluster-size prior (label-free diagnostic).**
+
+| | mean S2 matches / S1 | mean S3 matches / S1 | singletons |
+|---|---|---|---|
+| train truth (US = India) | 1.672 | 1.786 | 5.6% |
+| test v1 US | 1.632 | 1.743 | 5.81% |
+| test v1 France | 1.661 | 1.756 | 5.45% |
+| **test v1 India** | **1.908** | **1.910** | **3.50%** |
+
+US and France sit at about 97.5% of the prior, which is normal recall loss. **India over-matches by about 0.35 per
+S1 (about 280k false merges)** and under-predicts singletons, so every singleton that received a sibling scores 0.
+
+**5.3 Root cause for India: test-only native-script distractor words.**
+- The learned transliteration table covers **100%** of native tokens in held-out *train* but only **96.4%** in
+  *test*. The uncovered tokens are not random names. They are a fixed list of about 20 **business-type words**,
+  each about 3,600 times, evenly: मोटर्स motors, स्टोर्स stores, एजेंसीज agencies, ज्वेलर्स jewellers, जनरल general,
+  बेकरी bakery, प्रोविजन provision, स्वीट्स sweets, फार्मेसी pharmacy, मेडिकल्स medicals, ऑटोमोबाइल्स automobiles,
+  ट्रेडर्स traders, हार्डवेयर hardware, गारमेंट्स garments, स्टील steel, इलेक्ट्रॉनिक्स electronics, फर्नीचर furniture,
+  रेस्टोरेंट restaurant, टेक्सटाइल्स textiles (plus the same words in Kannada, Telugu, …).
+- In Latin script these words are known distractor modifiers (train S2/S3 rate about 20× the S1 rate). In native
+  script they never occur in training, so v1 romanised them into gibberish that looked like a harmless typo.
+  "जय माँ टेक्नोलॉजी ज्वेलर्स लिमिटेड" was accepted as "Jay Maa Technology Limited".
+- Sampled India false merges follow the sibling pattern: name plus an added or swapped word (Steel, Technologies,
+  Foundation, Overseas, Hardware) and a **replaced house identifier** (E-4/39 → E-4/60, C1-39/23 → 39/30,
+  128B → 133B/5). Siblings often come in pairs that share their own number.
+
+**5.4 France** uses the same generator with French vocabulary. Test-S2/S3-only modifier words are international,
+développement, groupe, holding, participations, distribution, associés and SNC (240–375 per 10k in S2/S3 vs 1–80
+in S1). There are word substitutions too (Comite → Primaire, Maison → Federation, Soins → Ecole). v1 France's
+match rate looks right, but the spot-check showed substitution false merges in 3 of 12 clusters.
+
+**5.5 Things checked and rejected**
+- A hard "replaced number" rule flags 4% of true matches (noise also rewrites digits, e.g. 37931 → 37932). Not usable.
+- A "two records replace the S1 number with the same new number" rule flags 2.3% of true matches, because the
+  source formatting applies the same rewrite to several records. Not usable alone.
+- A plain word-substitution rule: 5.6% of true matches also contain one (generic words). Not usable alone.
+
+**5.6 v2 (test-time adaptation, v1 model reused, predict-only)**
+- `prep.extend_translit`: unknown native tokens are romanised and matched by *consonant skeleton* to the most
+  frequent Latin name token of the same data. All 7 checked test words map correctly (ज्वेलर्स → jewellers,
+  ಬೇಕರಿ → bakery, इलेक्ट्रॉनिक्स → electronics …).
+- `pipeline.calibrate_thresholds`: if a country's predicted matches per S1 exceed the validation rate by more than
+  2%, its threshold is raised (never lowered) until it meets the rate. Expected to act on India only.
+- Predict also writes `pair_scores.parquet` so thresholds can be retuned offline.
+
+## 6. Running it on Kaggle
 - Upload the challenge zip and this code folder as two private Datasets. Run
   `code/business_entity_resolution/kaggle_run.ipynb`. Internet must be ON (pip installs rapidfuzz,
   sparse_dot_topn and Unidecode only).
-- Prefer a **TPU VM** session for its CPU cores; nothing uses a GPU. On a 4-core CPU, expect about 5–7 h in total.
-- `train_frac=0.25` of training S1 (whole states) is used, with 20% of it held out for validation.
+- Attach a previous run's output (it contains `artifacts/`) to skip training and run predict only (about 3 h).
+  Set `FORCE_TRAIN = True` to retrain.
+- Nothing uses a GPU. Accelerator None is fine, and a TPU VM is faster only because of its CPU cores.
 
 ---
 
-## 6. HANDOFF — next tasks for the cloud session (priority order)
+## 7. NEXT (v3, needs retraining), priority order
 
-> The data is not in the repo. If the session has no data, work on code and unit-testable logic only,
-> and never commit the dataset.
-
-1. **France self-training lexicon** (highest expected value: 15% of test, no labels).
-   In `cmd_predict`, for France: score once, take confident pairs (p2 > 0.95 as positive, and
-   p2 < 0.05 among name-similar pairs with `n_tset ≥ 80` as negative), `learn_lexicon` on those,
-   blend it with the trained lexicon for French tokens only, recompute `add_lex`, and rescore.
-   Log how many French matches change.
-2. **Cluster-consistency (stage-3) features.** After stage 2, for each (q, s): the number of other
-   queries assigned to s with p > 0.5, the share of those sharing q's house number and s's house number,
-   max name similarity between q and those records, and whether q's source (S2/S3) already has
-   a strong match to s. Train on out-of-fold stage-2 predictions.
-3. **More training data plus robustness.** Try `train_frac` 0.4–0.6 if memory allows. Tune the
-   threshold per country (US vs India). For France, fall back to the global threshold,
-   or a slightly higher one to protect precision.
-4. **Speed.** `prep.parse_frame` (about 130 µs per record) is the main single-process cost left.
-   Profile and vectorise the hot regexes. Stage-1 OOF training could subsample negatives.
-5. **Documentation.** Fill `Documentation_template.md` (from the challenge zip) using sections 2–4 above.
-6. Ideas not tried yet: a small multilingual char/embedding model (MIT/Apache, ≤ 8B) as an
-   extra name-similarity feature for native-script names; a per-S1 "expected cluster size"
-   prior; learned address aliases (Bombay/Mumbai, etc.) from training co-occurrence.
+1. **S1-level singleton model.** Decide per S1 whether it has *any* match before attaching records, using
+   S1-level features: best / second-best p2, number of candidates, whether the best candidate carries a
+   distractor word or a replaced house identifier, and agreement among its candidates. Singletons are worth a
+   full 1.0 each, and v1 India predicted 3.5% vs the 5.6% prior.
+2. **Label-free distractor-word score.** For each extra or missing token: log(df in S2/S3 / df in S1) computed on
+   the data being scored (train at train time, test at test time). It flags French and new modifiers without
+   labels. Add **lexicon dropout** in training (randomly hide lexicon values) so the model learns to use this
+   score when the lexicon doesn't know a word (France).
+3. **Train on a test-like mix**: up-weight negatives about 1.7x (or subsample positives) so probabilities are
+   calibrated to test odds instead of relying on calibration.
+4. **Cluster-consistency (stage-3) features** from out-of-fold stage-2 predictions: peers of q under the same S1
+   sharing q's house identifier but not the S1's, number of high-p peers, and cross-source agreement.
+5. **Composite house identifiers** for India ("E-4/39", "C1-39/23", "DE 141/B2") as whole tokens, with
+   replaced-identifier features.
+6. France self-training lexicon (pseudo-labels from confident test pairs) if France still looks weak.
+7. Speed: `prep.parse_frame` is about 130 µs per record.
 
 Local dev loop (needs the zip):
 ```bash
