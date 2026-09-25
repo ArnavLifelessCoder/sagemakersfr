@@ -1,10 +1,14 @@
 """Record-level parsing: turns raw rows into normalised columns used by blocking/features."""
 import collections
 import os
+import re
 from multiprocessing import Pool
 
 import numpy as np
 import pandas as pd
+
+from rapidfuzz.distance import Levenshtein
+from unidecode import unidecode
 
 from .normalize import parse_address, parse_name, is_native, fold
 
@@ -49,6 +53,70 @@ def parse_frame(df, translit=None, workers=None, chunk=20000):
     for c in ("native", "domain", "half", "addr_empty"):
         parsed[c] = parsed[c].astype(np.int8)
     return pd.concat([df, parsed], axis=1)
+
+
+_SKEL_SUBS = (("ph", "f"), ("bh", "b"), ("dh", "d"), ("th", "t"), ("kh", "k"), ("gh", "g"), ("sh", "s"),
+              ("ch", "c"), ("ck", "k"), ("q", "k"), ("w", "v"), ("x", "ks"), ("z", "j"))
+
+
+def skeleton(s):
+    """Consonant skeleton used to match a romanised native word to a Latin word by sound."""
+    s = s.lower()
+    for a, b in _SKEL_SUBS:
+        s = s.replace(a, b)
+    s = re.sub(r"c(?=[eiy])", "s", s)
+    s = s.replace("c", "k")
+    s = re.sub(r"[^a-z]", "", s)
+    s = re.sub(r"[aeiouy]", "", s)
+    return re.sub(r"(.)\1+", r"\1", s)
+
+
+def extend_translit(table, names, min_count=20):
+    """Add a phonetic fallback for native-script tokens the learned table does not know.
+
+    Unknown native tokens (e.g. test-only business-type words such as "ज्वेलर्स") are romanised
+    and matched by consonant skeleton to the most frequent Latin name token of the same data
+    (exact skeleton, or edit distance 1 for skeletons of length >= 5). Uses only the names given.
+    """
+    latin = collections.Counter()
+    unknown = set()
+    for n in names:
+        if not isinstance(n, str) or not n:
+            continue
+        if is_native(n):
+            for w in n.split():
+                if is_native(w) and w not in table:
+                    unknown.add(w)
+        else:
+            latin.update(re.findall(r"[a-z]+", fold(n)))
+    if not unknown:
+        return dict(table)
+    by_skel = {}
+    for w, c in latin.items():
+        if c < min_count or len(w) < 3:
+            continue
+        k = skeleton(w)
+        if len(k) >= 2 and (k not in by_skel or by_skel[k][0] < c):
+            by_skel[k] = (c, w)
+    by_len = collections.defaultdict(list)
+    for k, v in by_skel.items():
+        by_len[len(k)].append((k, v))
+    out = dict(table)
+    for w in unknown:
+        sk = skeleton(unidecode(w))
+        if len(sk) < 3:
+            continue
+        hit = by_skel.get(sk)
+        if hit is None and len(sk) >= 5:
+            best = None
+            for L in (len(sk) - 1, len(sk), len(sk) + 1):
+                for k, v in by_len.get(L, ()):
+                    if k[0] == sk[0] and Levenshtein.distance(k, sk) <= 1 and (best is None or v[0] > best[0]):
+                        best = v
+            hit = best
+        if hit is not None:
+            out[w] = hit[1]
+    return out
 
 
 def learn_translit(s1_names, other_names, min_count=2):

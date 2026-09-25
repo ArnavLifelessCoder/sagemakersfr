@@ -31,7 +31,7 @@ from . import model as M
 from .blocking import iter_candidates
 from .data import read_sources, read_ground_truth, gt_pairs, write_id_lists
 from .features import cheap_features, python_features, add_context
-from .prep import parse_frame, learn_translit
+from .prep import parse_frame, learn_translit, extend_translit
 
 T0 = time.time()
 DEFAULT_CFG = dict(k_block=10, k_keep=5, threads=-1, workers=os.cpu_count() or 4, train_frac=0.25,
@@ -183,7 +183,7 @@ def cmd_train(a):
     src, pairs, tr, s1_sel = load_train(a, cfg)
     json.dump(tr, open(os.path.join(a.work, "translit.json"), "w", encoding="utf-8"), ensure_ascii=False)
     log("translit entries", len(tr), "| training records", len(src), "S1", len(s1_sel))
-    src = slim(parse_frame(src, tr, workers=cfg["workers"]))
+    src = slim(parse_frame(src, extend_translit(tr, src.business_name.values), workers=cfg["workers"]))
     log("parsed")
     s1 = src[src.src == 1].reset_index(drop=True)
     q = src[src.src != 1].reset_index(drop=True)
@@ -258,6 +258,14 @@ def cmd_train(a):
         if sc > best[0]:
             best = (sc, float(t))
     log("best validation F0.5 %.5f at threshold %.3f (on %d entities)" % (best[0], best[1], len(val_ents)))
+    # predicted / true matches on validation at the chosen threshold -> used to calibrate test thresholds
+    aq, as_ = M.assign(cand.qi.values, cand.si.values, p2, best[1])
+    val_set = set(val_ents)
+    n_pred = sum(1 for s in s1_ids[as_] if s in val_set)
+    n_true = sum(len(truth_map.get(s, ())) for s in val_ents)
+    target_mps = n_pred / max(1, len(val_ents))  # singletons included in the denominator
+    log(f"validation: true matches/S1 {n_true / max(1, len(val_ents)):.3f}, predicted/S1 {target_mps:.3f}"
+        f" (ratio {n_pred / max(1, n_true):.4f}) -> calibration target {target_mps:.3f}")
     if cfg["refit_full"]:
         Fall = F.copy()
         M.oof_lexicon_features(Fall, extra, miss, y, grp, hard)
@@ -266,7 +274,7 @@ def cmd_train(a):
     bst1.save_model(os.path.join(a.work, "stage1.txt"))
     bst2.save_model(os.path.join(a.work, "stage2.txt"), num_iteration=None if cfg["refit_full"] else best_it)
     json.dump(lex, open(os.path.join(a.work, "lexicon.json"), "w"))
-    json.dump({"threshold": best[1], "val_f05": best[0], "stage1_threshold": thr1, "features1": feats1,
+    json.dump({"threshold": best[1], "val_f05": best[0], "stage1_threshold": thr1, "target_mps": target_mps, "features1": feats1,
                "features2": feats2, "cfg": cfg}, open(os.path.join(a.work, "meta.json"), "w"), indent=1)
     log("saved artifacts to", a.work)
 
@@ -283,6 +291,7 @@ def cmd_predict(a):
     if a.workers:
         cfg["workers"] = a.workers
     thr = a.threshold if a.threshold is not None else meta["threshold"]
+    meta.setdefault("target_mps", 3.375)  # older artifacts: training prior 3.46 x ~0.975 recall ratio
     tr = json.load(open(os.path.join(a.work, "translit.json"), encoding="utf-8"))
     lex = json.load(open(os.path.join(a.work, "lexicon.json")))
     bst1 = lgb.Booster(model_file=os.path.join(a.work, "stage1.txt"))
@@ -294,7 +303,10 @@ def cmd_predict(a):
     s1_order = src.entity_id.values[src.src.values == 1].copy()
     res = []
     for country in sorted(src.country.unique()):
-        part = slim(parse_frame(src[src.country == country], tr, workers=cfg["workers"]))
+        part = src[src.country == country]
+        tr_c = extend_translit(tr, part.business_name.values)
+        log(country, f"translit: {len(tr)} learned + {len(tr_c) - len(tr)} phonetic fallbacks")
+        part = slim(parse_frame(part, tr_c, workers=cfg["workers"]))
         s1 = part[part.src == 1].reset_index(drop=True)
         q = part[part.src != 1].reset_index(drop=True)
         del part
@@ -313,7 +325,7 @@ def cmd_predict(a):
             del F, extra, miss
             gc.collect()
         res.append(pd.DataFrame({"s1": s1.entity_id.values[cand.si.values],
-                                 "q": q.entity_id.values[cand.qi.values], "p": p2}))
+                                 "q": q.entity_id.values[cand.qi.values], "p": p2, "country": country}))
         del s1, q, cand, F1, p1
         gc.collect()
     d = pd.concat(res, ignore_index=True).sort_values("p", ascending=False)
@@ -321,13 +333,38 @@ def cmd_predict(a):
     cand_map = d.groupby("s1", sort=False).q.apply(list).to_dict()
     write_id_lists(os.path.join(a.out, "candidate_pairs.tsv"), s1_order, cand_map, "candidate_entity_ids")
     best = d.drop_duplicates("q")
-    best = best[best.p >= thr]
+    n_s1 = src[src.src == 1].country.value_counts().to_dict()
+    thr_c = calibrate_thresholds(best, n_s1, thr, meta.get("target_mps"), a.calibrate)
+    best = best[best.p.values >= best.country.map(thr_c).values]
     match = best.groupby("s1", sort=False).q.apply(list).to_dict()
     write_id_lists(os.path.join(a.out, "matching_results.tsv"), s1_order, match, "matched_entity_ids")
-    if a.save_scores:
+    if not a.no_scores:
         d.to_parquet(os.path.join(a.out, "pair_scores.parquet"), index=False)
     log(f"wrote outputs: {len(d)} candidate pairs, {len(best)} matches, "
-        f"{sum(1 for s in s1_order if s not in match)} S1 without match, threshold {thr}")
+        f"{sum(1 for s in s1_order if s not in match)} S1 without match, thresholds {thr_c}")
+
+
+def calibrate_thresholds(best, n_s1, base_thr, target_mps, mode, tol=0.02):
+    """Per-country decision thresholds.
+
+    Training truth has the same cluster-size distribution in every country (3.46 matches per
+    S1), and the test set carries ~1.7x more distractors per S1 than training, which inflates
+    probabilities. With mode='shape' a country whose predicted matches per S1 exceed the
+    calibration target (learned on validation) by more than `tol` gets its threshold raised
+    (never lowered) until it meets the target.
+    """
+    thr_c = {c: float(base_thr) for c in n_s1}
+    if mode != "shape" or not target_mps:
+        return thr_c
+    for c, n in n_s1.items():
+        p = np.sort(best.p.values[best.country.values == c])[::-1]
+        k = int(round(target_mps * n))
+        above = int((p >= base_thr).sum())
+        if 0 < k and above > k * (1 + tol):  # only act on clear over-matching
+            thr_c[c] = float(max(base_thr, p[k - 1]))
+        log(f"  calibrate {c}: {above / n:.3f} matches/S1 at base thr {base_thr:.3f} -> "
+            f"thr {thr_c[c]:.4f} ({min(above, k) / n:.3f} matches/S1, target {target_mps:.3f})")
+    return thr_c
 
 
 def main():
@@ -347,7 +384,9 @@ def main():
     p.add_argument("--threshold", type=float, default=None)
     p.add_argument("--threads", type=int, default=None)
     p.add_argument("--workers", type=int, default=None)
-    p.add_argument("--save-scores", action="store_true")
+    p.add_argument("--no-scores", action="store_true", help="do not write pair_scores.parquet")
+    p.add_argument("--calibrate", choices=["shape", "none"], default="shape",
+                   help="per-country threshold calibration to the training cluster-size prior")
     a = ap.parse_args()
     {"train": cmd_train, "predict": cmd_predict}[a.cmd](a)
 
