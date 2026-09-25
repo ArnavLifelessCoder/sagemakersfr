@@ -224,6 +224,17 @@ match rate looks right, but the spot-check showed substitution false merges in 3
   names. The full Kaggle v3 run is the real measurement.
 - Also fixed in v3: leet digits 6→g, 8→b, 9→g, 2→z (`6lobal`, `8lue`, `8rothers` are common in the data).
 
+**5.9 France: v2 vs v3 on the same records** (Pays de la Loire test slice: 72,734 S1; `fslice_cmp.py`)
+- Both models accept 153,399 pairs, v2 alone 13,293, v3 (dev-trained) alone 1,997.
+- **v2-only accepts are almost all French siblings** (about 18% of S1 in the slice): added modifiers such as
+  "HQ Amicale Participations" (2→23), "Fabrique (France) Centre Participations" (3→24), "Croix Club
+  Développement" (11→12), "Association de Soutien Groupe", "Sce SAS & Associés", "Dans SARL Et Fils";
+  word swaps such as Foyer→Comite, Comite→Collège (15→16), College→Anciens, Club→Fetes (4→11).
+- **v3-only accepts are mostly true matches v2 missed**: random renames at the exact address ("Tavocalo One",
+  "Zetanylatavo", "ORBIXYLO", "Vantagewex") and initials ("DC", "AS", "PD"). A few are residual siblings
+  (Medico→Compagnie 16→19, SASU→SNC 1→10).
+- So France was also losing heavily in v1/v2, and v3 should recover most of it.
+
 ## 6. Running it on Kaggle
 - Upload the challenge zip and this code folder as two private Datasets. Run
   `code/business_entity_resolution/kaggle_run.ipynb`. Internet must be ON (pip installs rapidfuzz,

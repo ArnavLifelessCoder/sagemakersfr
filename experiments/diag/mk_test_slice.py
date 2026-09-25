@@ -4,7 +4,7 @@ sys.path.insert(0, r"C:\Users\Arnav Gawade(pro)\OneDrive\Desktop\amazon ml\code\
 from src.make_dev_subset import state_of
 
 D = r"C:\Users\ARNAVG~1\AppData\Local\Temp\claude\C--Users-Arnav-Gawade-pro--OneDrive-Desktop-amazon-ml\89303762-6110-432e-ae87-2d206a5ca21f\scratchpad\sr\student_resource\dataset\test"
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "tslice", "test")
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), os.environ.get("SLICE", "tslice"), "test")
 STATES = set(sys.argv[1].split(",")) if len(sys.argv) > 1 else {"IN-TN", "IN-RJ"}
 os.makedirs(OUT, exist_ok=True)
 for k in (1, 2, 3):
