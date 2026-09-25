@@ -255,7 +255,8 @@ ALT_RE = re.compile(
 DOMAIN_RE = re.compile(r"(?:https?://)?(?:www\.)?([a-z0-9-]+)\.(?:com|net|org|in|co\.in|fr|co|biz|us|info)\b")
 ID_RE = re.compile(r"\(?\b(?:id|ref|reg|no)\s*[:#.]?\s*\d+\)?")
 LONGNUM_RE = re.compile(r"[-|]?\s*\b\d{6,}\b")
-LEET = str.maketrans({"0": "o", "1": "l", "3": "e", "5": "s", "4": "a", "7": "t", "@": "a", "$": "s"})
+LEET = str.maketrans({"0": "o", "1": "l", "3": "e", "5": "s", "4": "a", "7": "t", "6": "g", "8": "b",
+                      "9": "g", "2": "z", "@": "a", "$": "s"})
 SINGLE_LETTERS_RE = re.compile(r"\b[a-z](?:\.[a-z])+\b\.?")
 
 
