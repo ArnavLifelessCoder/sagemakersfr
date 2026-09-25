@@ -185,6 +185,45 @@ match rate looks right, but the spot-check showed substitution false merges in 3
   2%, its threshold is raised (never lowered) until it meets the rate. Expected to act on India only.
 - Predict also writes `pair_scores.parquet` so thresholds can be retuned offline.
 
+**5.7 v2 run on Kaggle (v1 model + test-time adaptation)**
+- The phonetic fallback mapped **144** unknown native tokens in India (0 in US and France, as expected).
+- The Kaggle v1 model's own validation F0.5 was **0.9883** (larger and harder states than the dev slice).
+- Calibration: India 3.793 matches/S1 at the base threshold 0.75 → threshold **0.9707** (3.375). US (3.376)
+  and France (3.422) were left unchanged. Singletons are now 5.45% / 5.47% / 5.81% (FR / IN / US) vs the 5.6% prior.
+- Inspection of India pairs by probability band (`experiments/diag/v2_inspect.py`):
+  - **removed** (0.75–0.97, 338k pairs): almost all sibling fakes (Brine Traders → "…Industries",
+    Harvest Brothers → "…Exports" with flat 508→512, Channel Collective → Channel Chemicals 32/8→32/21,
+    Vijay Care → "…स्टोर्स" (stores), Private → Public). So the cut was right.
+  - **kept** at 0.97–0.99: still about half siblings (Chennai Cosmetics → Chennai Producer 10/140→10/144,
+    Kamdhenu Plasto → Gardens 70/144→70/165, Pink Farms → Landmarks 267/2→267/9, Balaji Management → एस्टेट).
+    Threshold calibration alone cannot separate them.
+- The sibling pattern is **one content word swapped for another real word + a changed sub-number** of the house identifier.
+
+**5.8 Why v3 fixes it (evidence)**
+- On training data (dev), name-similar pairs with a *content-word substitution + changed number* are
+  **99.7% false** (India 243,860 pairs, true share 0.003; US 0.002). True noise swaps in *generic* words
+  (services, center, partners) or spelling variants (laxmi/lakshmi), and rarely changes the number at the same time.
+- A real **test slice** (Tamil Nadu + Rajasthan, 87,590 S1, 498k S2/S3; `mk_test_slice.py`, `tslice_look.py`)
+  was scored with the v2 model and with the v3 model trained only on the dev slice:
+
+| S2/S3 record (vs its S1) | v2 p | v3 p | truth |
+|---|---|---|---|
+| Chennai **Producer** Pvt Ltd, 10/144 (S1: Chennai Cosmetics, 10/140) | 0.989 | 0.000 | sibling |
+| Chennai **Sai** Pvt Ltd, 10/144 | 0.991 | 0.000 | sibling |
+| Chennai Cosmetics **Exports**, 10/144 | 0.895 | 0.000 | sibling |
+| Channel **Chemicals**, 32/21 (S1: Channel Collective, 32/8) | 0.900 | 0.000 | sibling |
+| Kamdhenu **Gardens**, 70/165 (S1: Kamdhenu Plasto, 70/144) | 0.983 | 0.002 | sibling |
+| Cresco Technologies **Infratech**, Shop No. 3 | 0.962 | 0.000 | sibling |
+| "Mirawex" (random rename, same address) | 0.988 | 0.999 | true |
+| `TECHPRIVATECRESCO.COM` | 0.006 | 0.988 | true |
+
+  The **anchor features** drive this: the S1's real records agree on the house identifier, while a sibling
+  disagrees with them and with the S1.
+- Caveat: the dev-trained v3 predicts 2.87 matches per S1 on that slice (below about 3.4). Part of that is its small
+  transliteration table (607 vs about 1,500 tokens on full training), which costs recall on Tamil and Hindi
+  names. The full Kaggle v3 run is the real measurement.
+- Also fixed in v3: leet digits 6→g, 8→b, 9→g, 2→z (`6lobal`, `8lue`, `8rothers` are common in the data).
+
 ## 6. Running it on Kaggle
 - Upload the challenge zip and this code folder as two private Datasets. Run
   `code/business_entity_resolution/kaggle_run.ipynb`. Internet must be ON (pip installs rapidfuzz,
@@ -195,7 +234,12 @@ match rate looks right, but the spot-check showed substitution false merges in 3
 
 ---
 
-## 7. NEXT (v3, needs retraining), priority order
+## 7. NEXT, priority order
+
+Done in v3 (commit `59b53c6` + `397a734`): label-free modifier-word features (item 2), lexicon
+dropout, anchor / cluster-consistency features (item 4), group features computed on the full
+candidate set, leet fix, `src/proxy_report.py`, and the notebook `download_me.zip` bundle.
+Still open:
 
 1. **S1-level singleton model.** Decide per S1 whether it has *any* match before attaching records, using
    S1-level features: best / second-best p2, number of candidates, whether the best candidate carries a
