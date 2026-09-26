@@ -235,6 +235,40 @@ match rate looks right, but the spot-check showed substitution false merges in 3
   (Medico→Compagnie 16→19, SASU→SNC 1→10).
 - So France was also losing heavily in v1/v2, and v3 should recover most of it.
 
+**5.10 Leaderboard so far and the training-slice bug**
+
+| version | public LB | main change |
+|---|---|---|
+| v1 | 0.911 | baseline two-stage LightGBM |
+| v2 | 0.934 | phonetic transliteration fallback + per-country threshold calibration (predict-only) |
+| v3 | 0.947 | anchor / cluster features, label-free modifier words, lexicon dropout, leet fix |
+
+- The v3 Kaggle log showed the **training slice was 18 US states + 1 tiny India state (716 queries)**:
+  `select_training_slice` drew whole states from the pooled list until 25% of S1 was reached, and
+  India's states are huge. **v1-v3 were trained essentially without India** (47% of test). Only the
+  transliteration table was learned from all pairs, which hid the problem.
+- v2 vs v3 final matches (`v2v3.py`): France both 840k, v2-only 47.6k (mostly siblings v3 removed), v3-only 6.3k.
+  India both 2.60M, v2-only 138k (siblings with "Exports/Infratech/Overseas" + changed sub-numbers), v3-only
+  130k, **of which many are Indian legal-type siblings** (LLP→Limited, Private→Public with a new number),
+  a pattern the US-only model never saw. US: v3 adds some next-door siblings (2831→2832, 5501→5506).
+- The field: about 200 teams above 0.98, top 50 above 0.99 (leader 0.9859 on day 1, higher later).
+
+**5.11 v4 design (collective ER + proper training data)**
+- **Stratified training slice**: states sampled per country, about `train_frac` of each country's S1; states
+  larger than half a country's target are skipped so several states are represented.
+- **Collective peer features** (`features.peer_features`): a sibling is a hidden business with its own
+  records, so its modifier word and its new house number repeat across several of them, while per-record noise
+  (typos, "services", zero-padding) does not. For each (q, s), count the other candidates of s sharing q's
+  extra token / new number (plus p1-weighted versions and "shares both"). On dev, `peer_num_share_p` is the
+  #4 feature.
+- **Test-like threshold tuning**: `fbeta_macro(fp_weight=1.7)` counts each false merge 1.7x (test holds
+  about 1.7x more distractors per S1), and the threshold is chosen on that score.
+- **Parallel seeds + ensemble**: four Kaggle runs (seeds 0/1/2 at `train_frac` 0.3, seed 3 at 0.5) on
+  different random states; `src/ensemble.py` averages pair probabilities (weights allowed), one
+  country at a time on hashed ids (about 3 min for the full test on a laptop), then per-country assignment and
+  calibration.
+- Dev: F0.5 0.9919 (test-like 0.9911).
+
 ## 6. Running it on Kaggle
 - Upload the challenge zip and this code folder as two private Datasets. Run
   `code/business_entity_resolution/kaggle_run.ipynb`. Internet must be ON (pip installs rapidfuzz,
@@ -242,6 +276,10 @@ match rate looks right, but the spot-check showed substitution false merges in 3
 - Attach a previous run's output (it contains `artifacts/`) to skip training and run predict only (about 3 h).
   Set `FORCE_TRAIN = True` to retrain.
 - Nothing uses a GPU. Accelerator None is fine, and a TPU VM is faster only because of its CPU cores.
+- Parallel runs: set `SEED` (and optionally `train_frac` in `CONFIG`) in the first cell; each run writes
+  `download_me_seed<SEED>.zip` (matching_results.tsv, pair_scores.parquet, meta.json, run_log.txt).
+- Ensemble locally: `python -m src.ensemble --runs dir0 dir1 dir2 dir3 --weights 1 1 1 2
+  --test-dir DATASET_DIR/test --out ens_out`.
 
 ---
 
