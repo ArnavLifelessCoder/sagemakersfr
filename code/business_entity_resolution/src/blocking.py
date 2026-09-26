@@ -89,6 +89,13 @@ def generate_candidates(s1, q, **kw):
     return res.drop_duplicates(["qi", "si"]).reset_index(drop=True)
 
 
+# S1 state -> other states its true S2/S3 records are written in (learned from the TRAINING ground
+# truth, see experiments/diag/state_shift.py): 18.5% of Telangana pairs are written "Andhra Pradesh"
+# (Hyderabad), 8% of DC pairs parse as "Washington" (shuffled components). Queries of those states are
+# also searched against the S1 partition.
+STATE_NEIGHBOURS = {"IN-TG": ["IN-AP"], "US-DC": ["US-WA"], "US-WA": ["US-DC"], "IN-AP": ["IN-TG"]}
+
+
 def iter_candidates(s1, q, k_name=10, k_addr=10, k_name_nostate=10, threads=-1,
                     chunk=200000, max_df=0.05, log=print):
     """Yield (partition_name, DataFrame[qi, si, name_cos, addr_cos]) one partition at a time.
@@ -106,7 +113,7 @@ def iter_candidates(s1, q, k_name=10, k_addr=10, k_name_nostate=10, threads=-1,
         states = sorted(set(s_state[sc]) - {""})
         for st in states:
             s_idx = np.flatnonzero(sc & (s_state == st))
-            q_idx = np.flatnonzero(qc & (q_state == st))
+            q_idx = np.flatnonzero(qc & np.isin(q_state, [st] + STATE_NEIGHBOURS.get(st, [])))
             if len(q_idx) == 0:
                 continue
             yield f"{country}/{st}", _run(s1, q, s_idx, q_idx, max_df, k_name, k_addr, threads, chunk)

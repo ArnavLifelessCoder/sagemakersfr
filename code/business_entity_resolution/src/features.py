@@ -8,6 +8,9 @@ import pandas as pd
 from rapidfuzz import fuzz, process
 from rapidfuzz.distance import JaroWinkler
 
+# states the generator uses interchangeably for the same place (see blocking.STATE_NEIGHBOURS)
+STATE_GROUP = {"IN-AP": "IN-TG", "US-DC": "US-WA"}
+
 HN_REL = {"both_missing": 0, "q_missing": 1, "s_missing": 2, "equal": 3, "equal_suffix": 4,
           "truncated": 5, "diff_small": 6, "diff_mid": 7, "diff_large": 8}
 
@@ -108,7 +111,7 @@ def _pair_rows(args):
         rows[i, 21] = len(xa_alpha & xb_alpha) / max(1, len(xa_alpha | xb_alpha)) if (xa_alpha or xb_alpha) else -1
         rows[i, 22] = len(xb_alpha - xa_alpha)
         rows[i, 23] = len(xa_alpha - xb_alpha)
-        st_a, st_b = s_state[i], q_state[i]
+        st_a, st_b = STATE_GROUP.get(s_state[i], s_state[i]), STATE_GROUP.get(q_state[i], q_state[i])
         rows[i, 24] = -1 if (not st_a or not st_b) else float(st_a == st_b)
         rows[i, 25] = float(q_half[i])
         # alt name (before DBA/formerly) vs s core
