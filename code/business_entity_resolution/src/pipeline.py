@@ -30,12 +30,12 @@ import pandas as pd
 from . import model as M
 from .blocking import iter_candidates
 from .data import read_sources, read_ground_truth, gt_pairs, write_id_lists
-from .features import cheap_features, python_features, add_context, anchor_features
+from .features import cheap_features, python_features, add_context, anchor_features, peer_features
 from .prep import parse_frame, learn_translit, extend_translit
 
 T0 = time.time()
-DEFAULT_CFG = dict(k_block=10, k_keep=5, threads=-1, workers=os.cpu_count() or 4, train_frac=0.25,
-                   val_pct=20, seed=0, rounds=3000, s1_recall=0.9995, refit_full=False, lex_drop=0.4)
+DEFAULT_CFG = dict(k_block=10, k_keep=5, threads=-1, workers=os.cpu_count() or 4, train_frac=0.3,
+                   val_pct=20, seed=0, rounds=3000, s1_recall=0.9995, refit_full=False, lex_drop=0.4, fp_weight=1.7)
 
 
 def log(*a):
@@ -122,6 +122,9 @@ def group_features(cand, p1, F1, s1, q, cfg):
     """Features that depend on all candidates of a query / an S1 (compute on the full set)."""
     g = anchor_features(cand, p1, F1.n_tsort.values, s1, q, workers=cfg["workers"])
     add_context(g, cand, score=p1, prefix="p1_")
+    pf = peer_features(cand, p1, s1, q)
+    for col in pf.columns:
+        g[col] = pf[col].values
     return g
 
 
@@ -145,13 +148,22 @@ def select_training_slice(src, pairs, frac, seed):
     is_s1 = src.src.values == 1
     parts = src[is_s1].groupby(["country", "state"]).size().reset_index(name="n")
     parts = parts[parts.state != ""].sample(frac=1.0, random_state=seed)
-    target = frac * is_s1.sum()
-    chosen, tot = set(), 0
-    for c, s, n in parts.itertuples(index=False):
-        if tot >= target:
-            break
-        chosen.add((c, s))
-        tot += n
+    # stratified by country: every country contributes ~frac of its S1 (v1-v3 drew states from the
+    # pooled list and ended up with almost no India). States larger than half the country's
+    # target are skipped so several states (and their different noise) are represented.
+    chosen = set()
+    for c, grp in parts.groupby("country"):
+        target = frac * grp.n.sum()
+        tot = 0
+        for _, s, n in grp.itertuples(index=False):
+            if tot >= target:
+                break
+            if n > 0.5 * target and len(grp) > 3:
+                continue
+            chosen.add((c, s))
+            tot += n
+        log(f"  training slice {c}: {sum(1 for x in chosen if x[0] == c)} states, {tot} S1 "
+            f"({tot / grp.n.sum():.2f} of country)")
     key = pd.Series(list(zip(src.country.values, src.state.values)))
     in_part = key.isin(chosen).values
     ids = src.entity_id.values
@@ -281,11 +293,12 @@ def cmd_train(a):
     best = (0.0, 0.5)
     for t in np.arange(0.3, 0.951, 0.025):
         aq, as_ = M.assign(cand.qi.values, cand.si.values, p2, t)
-        sc = M.fbeta_macro(M.to_mapping(s1_ids[as_], q_ids[aq]), truth_map, val_ents)
-        log(f"  thr {t:.3f}  F0.5 {sc:.5f}")
+        mp = M.to_mapping(s1_ids[as_], q_ids[aq])
+        sc = M.fbeta_macro(mp, truth_map, val_ents, fp_weight=cfg["fp_weight"])
+        log(f"  thr {t:.3f}  F0.5 {M.fbeta_macro(mp, truth_map, val_ents):.5f}  test-like(fp x{cfg['fp_weight']}) {sc:.5f}")
         if sc > best[0]:
             best = (sc, float(t))
-    log("best validation F0.5 %.5f at threshold %.3f (on %d entities)" % (best[0], best[1], len(val_ents)))
+    log("best test-like validation F0.5 %.5f at threshold %.3f (on %d entities)" % (best[0], best[1], len(val_ents)))
     # predicted / true matches on validation at the chosen threshold -> used to calibrate test thresholds
     aq, as_ = M.assign(cand.qi.values, cand.si.values, p2, best[1])
     val_set = set(val_ents)

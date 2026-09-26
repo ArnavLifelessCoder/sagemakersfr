@@ -209,8 +209,11 @@ def assign(qi, si, p, threshold):
     return d.qi.values, d.si.values
 
 
-def fbeta_macro(pred, truth, s1_ids, beta=0.5):
-    """pred/truth: dict s1 -> set(ids). Macro average over s1_ids (singletons included)."""
+def fbeta_macro(pred, truth, s1_ids, beta=0.5, fp_weight=1.0):
+    """pred/truth: dict s1 -> set(ids). Macro average over s1_ids (singletons included).
+
+    fp_weight > 1 emulates a test set with proportionally more distractors: each false merge is
+    counted fp_weight times (test holds ~1.7x more sibling distractors per S1 than training)."""
     b2 = beta * beta
     tot = 0.0
     for s in s1_ids:
@@ -224,7 +227,7 @@ def fbeta_macro(pred, truth, s1_ids, beta=0.5):
         tp = len(P & T)
         if tp == 0:
             continue
-        prec = tp / len(P)
+        prec = tp / (tp + fp_weight * (len(P) - tp))
         rec = tp / len(T)
         tot += (1 + b2) * prec * rec / (b2 * prec + rec)
     return tot / max(1, len(s1_ids))

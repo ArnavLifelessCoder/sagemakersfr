@@ -270,6 +270,66 @@ def anchor_features(cand, p1, n_tsort, s1, q, workers=None, strong=0.5):
     return pd.DataFrame(out, columns=ANCHOR_FEATS, index=cand.index)
 
 
+PEER_FEATS = ["peer_ex_share", "peer_ex_share_p", "peer_num_share", "peer_num_share_p", "peer_both",
+              "q_n_extra_exact", "q_n_newnum", "s_n_cand_all"]
+
+
+def peer_features(cand, p1, s1, q):
+    """Collective evidence among all candidates of the same S1.
+
+    A sibling distractor is a hidden business with its own records, so its modifier word
+    ("exports") and its new house number repeat across several of them; per-record noise
+    (typos, 'services', zero-padding) does not. For each (q, s):
+      peer_ex_share   - max over q's extra name tokens of how many OTHER candidates of s carry it
+      peer_num_share  - same for q's numbers that are not in the S1 address
+      *_p             - same, weighted by the peers' stage-1 probability
+      peer_both       - number of other candidates sharing both an extra token and a new number
+    """
+    n = len(cand)
+    si = cand.si.values
+    qi = cand.qi.values
+    s_core = s1["name_core"].values
+    s_nums = s1["nums"].values
+    q_core = q["name_core"].values
+    q_nums = q["nums"].values
+    ex = [None] * n
+    nn = [None] * n
+    for i in range(n):
+        a = set(s_core[si[i]].split())
+        ex[i] = frozenset(t for t in q_core[qi[i]].split() if t not in a and len(t) > 2 and not t.isdigit())
+        b = set(s_nums[si[i]].split())
+        nn[i] = frozenset(x for x in q_nums[qi[i]].split() if x not in b)
+    out = np.zeros((n, len(PEER_FEATS)), np.float32)
+    order = np.argsort(si, kind="stable")
+    s_sorted = si[order]
+    bounds = np.flatnonzero(np.r_[True, s_sorted[1:] != s_sorted[:-1], True])
+    for b0, b1 in zip(bounds[:-1], bounds[1:]):
+        idx = order[b0:b1]
+        if len(idx) == 1:
+            i = idx[0]
+            out[i, 5], out[i, 6], out[i, 7] = len(ex[i]), len(nn[i]), 1
+            continue
+        tok_c, tok_p, num_c, num_p = {}, {}, {}, {}
+        for i in idx:
+            for t in ex[i]:
+                tok_c[t] = tok_c.get(t, 0) + 1
+                tok_p[t] = tok_p.get(t, 0.0) + p1[i]
+            for x in nn[i]:
+                num_c[x] = num_c.get(x, 0) + 1
+                num_p[x] = num_p.get(x, 0.0) + p1[i]
+        for i in idx:
+            if ex[i]:
+                out[i, 0] = max(tok_c[t] for t in ex[i]) - 1
+                out[i, 1] = max(tok_p[t] for t in ex[i]) - p1[i]
+            if nn[i]:
+                out[i, 2] = max(num_c[x] for x in nn[i]) - 1
+                out[i, 3] = max(num_p[x] for x in nn[i]) - p1[i]
+            if ex[i] and nn[i]:
+                out[i, 4] = sum(1 for j in idx if j != i and (ex[i] & ex[j]) and (nn[i] & nn[j]))
+            out[i, 5], out[i, 6], out[i, 7] = len(ex[i]), len(nn[i]), len(idx)
+    return pd.DataFrame(out, columns=PEER_FEATS, index=cand.index)
+
+
 def add_context(f, cand, score=None, prefix=""):
     """Features describing competition among candidates of the same query / same S1."""
     if score is None:
