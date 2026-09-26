@@ -277,6 +277,7 @@ match rate looks right, but the spot-check showed substitution false merges in 3
 | v2 | 0.934 |
 | v3 | 0.947 |
 | **v4 (seeds 0 / 2 / 3)** | **0.971 / 0.971 / 0.971** |
+| v4 3-seed ensemble | 0.971 |
 
 - Stratified training (India finally in the training data) + collective peer features gave +0.024.
 - Validation (now with India): 0.9864-0.9881; test-like (FP x1.7) 0.9858-0.9875.
@@ -287,6 +288,45 @@ match rate looks right, but the spot-check showed substitution false merges in 3
 - Engineering notes: quadratic `peer_both` stalled predict on one India S1 with 1.28M candidates
   (fixed, linear); that S1 came from a quote-wrapped address that lost its state (fixed); train_frac 0.5
   runs out of memory on Kaggle (keep <= 0.3-0.4).
+
+**5.13 Where the loss really is: a labelled full-size slice (after v4)**
+
+A 3-seed ensemble scored 0.971, exactly like every single seed, so the error is systematic. To find it, a
+labelled evaluation slice was built from TRAIN states no model had been validated on (IN-TG + IN-AP +
+US-OH: 158,483 S1, 742k S2/S3, 549k true pairs; `mk_eval_slice.py`), scored with the v4 pipeline, and the
+per-S1 F0.5 loss split by cause (`err_decomp.py`):
+
+| loss source (F0.5 points) | v4 | + neighbour-state blocking + full translit |
+|---|---|---|
+| true pair never blocked | **0.0448** | 0.0045 |
+| candidate scored too low (model) | 0.0158 | 0.0049 |
+| false merge with a distractor | 0.0014 | 0.0016 |
+| record taken from another S1 | 0.0011 | 0.0009 |
+| false merge on a singleton | 0.0007 | 0.0009 |
+| **India (TG+AP) / US (OH) macro F0.5** | **0.874 / 0.990** | **0.984 / 0.990** |
+
+- Blocking-miss causes (`fn_block.py`): **82% of India's misses were Telangana S1s whose true records are
+  written "Andhra Pradesh"** (Hyderabad). On the full train, 18.5% of all Telangana true pairs are like that
+  (`state_shift.py`); DC<->WA (shuffled "District of Columbia, Washington, ...") 8% of DC pairs; everything
+  else < 0.2%. Overall 95.0% same state, 4.4% empty address, 0.55% other state.
+- Test exposure: 51,227 Telangana + 15,713 Andhra Pradesh S1 (about 3.9% of all test S1).
+- Fix (v5): `blocking.STATE_NEIGHBOURS` (TG<->AP, DC<->WA) and `features.STATE_GROUP` for `state_eq`,
+  so the already-trained v4 models accept these pairs without retraining.
+- Remaining US-OH misses: empty-address records with changed names; same-state pairs whose name and
+  number both changed ("Silver Pinnacle Shreya LLC, 5604 Main St" vs "Silver Pinnacle LLC Center, 604 Main Saint").
+
+**5.14 France and decoding, checked and rejected**
+- France's rejected band (0.2 <= p < 0.775) is mostly *correctly* rejected siblings. Unlike US/India, French
+  siblings often keep the **same house number** ("Lille Maison SAS" vs "Lille Sportive SAS", both at
+  24 Rue Princesse; "... & Fils", "... Développement", "... Groupe", SARL -> SCI).
+- Mixed into the same band are true renames at the exact address (Veraveralyra, Nexveo), initials (DG) and
+  empty-address exact names. On labelled data these categories are 87% / 100% / 87% true, but the
+  rejected subset is below the F0.5 break-even (about F*/(1+beta^2) = 0.78), so rule-based rescue would lose
+  points; only initials are clean (1,210 in France, negligible).
+- Per-S1 expected-F0.5 decoding instead of a global threshold: +0.0003 on the labelled slice.
+  The probabilities are already well used; decoding is not the lever.
+- Current estimate of the test loss split (from slice results and LB 0.971): France about 0.93 (largest
+  remaining gap, no labels), India about 0.965 (Telangana fixed in v5), US about 0.99.
 
 ## 6. Running it on Kaggle
 - Upload the challenge zip and this code folder as two private Datasets. Run
