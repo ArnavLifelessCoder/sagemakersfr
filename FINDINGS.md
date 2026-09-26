@@ -269,6 +269,25 @@ match rate looks right, but the spot-check showed substitution false merges in 3
   calibration.
 - Dev: F0.5 0.9919 (test-like 0.9911).
 
+**5.12 v4 on the leaderboard: 0.971 (three seeds, identical score)**
+
+| version | public LB |
+|---|---|
+| v1 | 0.911 |
+| v2 | 0.934 |
+| v3 | 0.947 |
+| **v4 (seeds 0 / 2 / 3)** | **0.971 / 0.971 / 0.971** |
+
+- Stratified training (India finally in the training data) + collective peer features gave +0.024.
+- Validation (now with India): 0.9864-0.9881; test-like (FP x1.7) 0.9858-0.9875.
+- New signal from the per-country match rates: after v4 the **US over-matches** (3.45-3.47 matches/S1,
+  calibration pushed its threshold to 0.96-0.98), while **France (3.09-3.17, 7% singletons) and India
+  (3.27, 6.5% singletons) under-match** relative to the 3.34-3.36 target. So the remaining loss is
+  likely US false merges plus France/India missed matches. Details per seed in RESULTS.md.
+- Engineering notes: quadratic `peer_both` stalled predict on one India S1 with 1.28M candidates
+  (fixed, linear); that S1 came from a quote-wrapped address that lost its state (fixed); train_frac 0.5
+  runs out of memory on Kaggle (keep <= 0.3-0.4).
+
 ## 6. Running it on Kaggle
 - Upload the challenge zip and this code folder as two private Datasets. Run
   `code/business_entity_resolution/kaggle_run.ipynb`. Internet must be ON (pip installs rapidfuzz,

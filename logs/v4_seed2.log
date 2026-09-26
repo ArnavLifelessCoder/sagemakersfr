@@ -1,0 +1,137 @@
+9.3s 1 0.00s - Debugger warning: It seems that frozen modules are being used, which may
+9.3s 2 0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+9.3s 3 0.00s - to python to disable frozen modules.
+9.3s 4 0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+10.1s 5 0.00s - Debugger warning: It seems that frozen modules are being used, which may
+10.1s 6 0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off
+10.1s 7 0.00s - to python to disable frozen modules.
+10.1s 8 0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.
+11.7s 9 dataset   : /kaggle/input/datasets/arnavgawade/amazon-ml-er-data/student_resource/dataset
+11.7s 10 code      : /kaggle/input/datasets/dhamirand/ber-real-1/business_entity_resolution
+11.7s 11 validator : /kaggle/input/datasets/arnavgawade/amazon-ml-er-data/student_resource/utils/validate_submission.py
+11.7s 12 CPU cores : 4
+11.7s 13 artifacts : /kaggle/working/artifacts (will train)
+16.9s 14 [?25l   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/3.1 MB[0m [31m?[0m eta [36m-:--:--[0m[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[90m╺[0m[90m━[0m [32m3.0/3.1 MB[0m [31m90.0 MB/s[0m eta [36m0:00:01[0m[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m [32m3.1/3.1 MB[0m [31m85.0 MB/s[0m eta [36m0:00:01[0m[2K   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m3.1/3.1 MB[0m [31m39.6 MB/s[0m eta [36m0:00:00[0m
+16.9s 15 [?25h[?25l   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/309.6 kB[0m [31m?[0m eta [36m-:--:--[0m[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m [32m307.2/309.6 kB[0m [31m162.9 MB/s[0m eta [36m0:00:01[0m[2K   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m309.6/309.6 kB[0m [31m6.8 MB/s[0m eta [36m0:00:00[0m
+17.0s 16 [?25h[?25l   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m0.0/235.8 kB[0m [31m?[0m eta [36m-:--:--[0m[2K   [91m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m[91m╸[0m [32m235.5/235.8 kB[0m [31m236.1 MB/s[0m eta [36m0:00:01[0m[2K   [90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m235.8/235.8 kB[0m [31m4.8 MB/s[0m eta [36m0:00:00[0m
+20.3s 17 [?25h/kaggle/working/ber
+20.3s 18 blocking.py  features.py	 model.py      prep.py
+20.3s 19 data.py      __init__.py	 normalize.py  proxy_report.py
+20.3s 20 ensemble.py  make_dev_subset.py  pipeline.py
+100.2s 21 [    71.8s] loaded train 12527040 pairs 7638365
+156.5s 22 [   128.2s]   training slice India: 10 states, 267990 S1 (0.30 of country)
+156.5s 23 [   128.2s]   training slice US: 18 states, 529913 S1 (0.40 of country)
+199.8s 24 [   171.4s] translit entries 1498 | training records 4540284 S1 797903
+380.0s 25 [   351.7s] parsed
+747.9s 26 [   719.5s]   blocking India: 10 states, 1267246 queries, 37349 without state
+1842.7s 27 [  1814.2s]   blocking US: 18 states, 2475135 queries, 90222 without state
+1902.5s 28 [  1874.1s] blocked pairs 33767793  positives 2719229 / 2759643 (recall 0.98536)
+3422.3s 29 [  3393.9s] stage-1 threshold 0.01207: keeps 0.109 of pairs (0.98/query), recall kept 0.99952
+3677.5s 30 [  3649.1s] stage-2 features (3667369, 97)
+3756.5s 31 [100]	train's binary_logloss: 0.0351441	valid's binary_logloss: 0.0370018
+3812.9s 32 [200]	train's binary_logloss: 0.0271544	valid's binary_logloss: 0.029075
+3861.1s 33 [300]	train's binary_logloss: 0.0250444	valid's binary_logloss: 0.0277931
+3900.0s 34 [400]	train's binary_logloss: 0.0236937	valid's binary_logloss: 0.0273489
+3936.4s 35 [500]	train's binary_logloss: 0.0225672	valid's binary_logloss: 0.0270882
+3971.8s 36 [600]	train's binary_logloss: 0.0216003	valid's binary_logloss: 0.0269275
+4006.6s 37 [700]	train's binary_logloss: 0.020724	valid's binary_logloss: 0.0268181
+4040.9s 38 [800]	train's binary_logloss: 0.01993	valid's binary_logloss: 0.0267529
+4081.8s 39 [900]	train's binary_logloss: 0.0191729	valid's binary_logloss: 0.0266893
+4117.8s 40 [1000]	train's binary_logloss: 0.0184899	valid's binary_logloss: 0.0266511
+4151.6s 41 [1100]	train's binary_logloss: 0.0178422	valid's binary_logloss: 0.0266284
+4185.5s 42 [1200]	train's binary_logloss: 0.0172412	valid's binary_logloss: 0.0265899
+4218.3s 43 [1300]	train's binary_logloss: 0.0166467	valid's binary_logloss: 0.0265651
+4251.9s 44 [1400]	train's binary_logloss: 0.0161006	valid's binary_logloss: 0.0265637
+4254.1s 45 [  4225.8s] best iteration 1306 | top features [('p1_q_gap', 17338214), ('p1', 3254749), ('lex_extra_min', 1136987), ('peer_num_share_p', 843809), ('legal_q_only', 326909), ('p1_s_gap_top', 244519), ('p1_s_ncand', 235271), ('ex_qdf_max', 209874), ('num_q_only', 199052), ('hn_logdiff', 194083), ('first_tok_eq', 190007), ('lex_extra_sum', 138438), ('anc_p1', 137256), ('q_gap', 119369), ('p1_q_ncand', 113836), ('lex_miss_sum', 106968), ('lex_miss_min', 103480), ('peer_num_share', 101425), ('legal_conflict', 92256), ('lex_miss_max', 90537)]
+4546.6s 46 [  4518.3s]   thr 0.300  F0.5 0.98703  test-like(fp x1.7) 0.98513
+4557.5s 47 [  4529.1s]   thr 0.325  F0.5 0.98721  test-like(fp x1.7) 0.98541
+4566.0s 48 [  4537.6s]   thr 0.350  F0.5 0.98739  test-like(fp x1.7) 0.98569
+4576.4s 49 [  4548.0s]   thr 0.375  F0.5 0.98755  test-like(fp x1.7) 0.98594
+4586.8s 50 [  4558.4s]   thr 0.400  F0.5 0.98767  test-like(fp x1.7) 0.98613
+4597.0s 51 [  4568.7s]   thr 0.425  F0.5 0.98773  test-like(fp x1.7) 0.98627
+4607.5s 52 [  4579.2s]   thr 0.450  F0.5 0.98783  test-like(fp x1.7) 0.98645
+4618.0s 53 [  4589.7s]   thr 0.475  F0.5 0.98788  test-like(fp x1.7) 0.98656
+4628.7s 54 [  4600.3s]   thr 0.500  F0.5 0.98788  test-like(fp x1.7) 0.98663
+4639.3s 55 [  4610.9s]   thr 0.525  F0.5 0.98797  test-like(fp x1.7) 0.98682
+4650.4s 56 [  4622.0s]   thr 0.550  F0.5 0.98797  test-like(fp x1.7) 0.98688
+4658.8s 57 [  4630.4s]   thr 0.575  F0.5 0.98798  test-like(fp x1.7) 0.98697
+4669.2s 58 [  4640.8s]   thr 0.600  F0.5 0.98800  test-like(fp x1.7) 0.98705
+4679.6s 59 [  4651.3s]   thr 0.625  F0.5 0.98797  test-like(fp x1.7) 0.98710
+4690.2s 60 [  4661.8s]   thr 0.650  F0.5 0.98796  test-like(fp x1.7) 0.98716
+4700.6s 61 [  4672.2s]   thr 0.675  F0.5 0.98803  test-like(fp x1.7) 0.98732
+4711.1s 62 [  4682.8s]   thr 0.700  F0.5 0.98805  test-like(fp x1.7) 0.98743
+4721.6s 63 [  4693.2s]   thr 0.725  F0.5 0.98804  test-like(fp x1.7) 0.98751
+4730.2s 64 [  4701.8s]   thr 0.750  F0.5 0.98801  test-like(fp x1.7) 0.98752
+4740.4s 65 [  4712.0s]   thr 0.775  F0.5 0.98794  test-like(fp x1.7) 0.98749
+4750.9s 66 [  4722.5s]   thr 0.800  F0.5 0.98787  test-like(fp x1.7) 0.98748
+4761.5s 67 [  4733.2s]   thr 0.825  F0.5 0.98778  test-like(fp x1.7) 0.98742
+4772.3s 68 [  4744.0s]   thr 0.850  F0.5 0.98763  test-like(fp x1.7) 0.98729
+4782.8s 69 [  4754.5s]   thr 0.875  F0.5 0.98742  test-like(fp x1.7) 0.98711
+4793.5s 70 [  4765.1s]   thr 0.900  F0.5 0.98717  test-like(fp x1.7) 0.98690
+4803.9s 71 [  4775.5s]   thr 0.925  F0.5 0.98664  test-like(fp x1.7) 0.98641
+4816.4s 72 [  4788.0s]   thr 0.950  F0.5 0.98575  test-like(fp x1.7) 0.98556
+4816.4s 73 [  4788.0s] best test-like validation F0.5 0.98752 at threshold 0.750 (on 159487 entities)
+4819.0s 74 [  4790.6s] validation: true matches/S1 3.459, predicted/S1 3.359 (ratio 0.9713) -> calibration target 3.359
+4819.3s 75 [  4790.9s] saved artifacts to /kaggle/working/artifacts
+4827.0s 76 train finished in 80.1 min
+4827.0s 77 validation macro F0.5 : 0.98752
+4827.0s 78 decision threshold    : 0.750
+4827.0s 79 stage-1 threshold     : 0.01207
+4827.0s 80 stage-2 features      : 103
+4827.0s 81 calibration target    : 3.359 matches per S1
+4827.1s 82 total 20176
+4827.1s 83 drwxr-xr-x 2 root root     4096 Sep 26 15:24 .
+4827.1s 84 drwxr-xr-x 4 root root     4096 Sep 26 14:05 ..
+4827.1s 85 -rw-r--r-- 1 root root   203159 Sep 26 15:24 lexicon.json
+4827.1s 86 -rw-r--r-- 1 root root     2452 Sep 26 15:24 meta.json
+4827.1s 87 -rw-r--r-- 1 root root  2121189 Sep 26 15:24 stage1.txt
+4827.1s 88 -rw-r--r-- 1 root root 18268161 Sep 26 15:24 stage2.txt
+4827.1s 89 -rw-r--r-- 1 root root    48999 Sep 26 14:07 translit.json
+4901.8s 90 [    69.5s] loaded test 11702133 {'India': 5527551, 'US': 4480137, 'France': 1694445}
+4911.4s 91 [    79.2s] France translit: 1498 learned + 0 phonetic fallbacks
+4975.9s 92 [   143.6s] France S1 259452 queries 1434993
+5807.9s 93 [   975.6s]   blocking France: 3 states, 1434993 queries, 500867 without state
+5808.1s 94 [   975.9s] France candidate pairs after stage 1: 1375820
+6011.7s 95 [  1179.4s] India translit: 1498 learned + 144 phonetic fallbacks
+6255.3s 96 [  1423.1s] India S1 809986 queries 4717565
+8921.0s 97 [  4088.8s]   blocking India: 20 states, 4717565 queries, 112024 without state
+8922.8s 98 [  4090.6s] India candidate pairs after stage 1: 4598798
+9583.9s 99 [  4751.6s] US translit: 1498 learned + 0 phonetic fallbacks
+9738.6s 100 [  4906.4s] US S1 663106 queries 3817031
+11215.0s 101 [  6382.8s]   blocking US: 47 states, 3817031 queries, 110424 without state
+11216.6s 102 [  6384.3s] US candidate pairs after stage 1: 3654895
+11830.1s 103 [  6997.8s]   calibrate India: 3.284 matches/S1 at base thr 0.750 -> thr 0.7500 (3.284 matches/S1, target 3.359)
+11830.3s 104 [  6998.1s]   calibrate US: 3.474 matches/S1 at base thr 0.750 -> thr 0.9603 (3.359 matches/S1, target 3.359)
+11830.5s 105 [  6998.2s]   calibrate France: 3.172 matches/S1 at base thr 0.750 -> thr 0.7500 (3.172 matches/S1, target 3.359)
+11891.2s 106 [  7059.0s] wrote outputs: 9629513 candidate pairs, 5711161 matches, 110053 S1 without match, thresholds {'India': 0.7500000000000004, 'US': 0.960270345211029, 'France': 0.7500000000000004}
+11905.6s 107 predict finished in 118.0 min
+11911.1s 108 S1 rows               : 1732544
+11911.1s 109 predicted singletons  : 0.0635 (train prior ~0.056)
+11911.1s 110 mean matches per S1   : 3.296
+11916.4s 111 S1  matches_per_S1  singleton_share
+11916.4s 112 country
+11916.4s 113 France   259452          3.1723           0.0702
+11916.4s 114 India    809986          3.2845           0.0645
+11916.4s 115 US       663106          3.3595           0.0597
+11916.6s 116 ML Challenge 2026 — submission validator
+11916.6s 117 test dir: /kaggle/input/datasets/arnavgawade/amazon-ml-er-data/student_resource/dataset/test
+11918.1s 118 required S1 entities: 1732544
+11934.7s 119 valid S2/S3 match IDs: 9969589
+11966.9s 120 matching_results.tsv: 1732544 rows (110053 empty, 1622491 non-empty).
+11992.8s 121 candidate_pairs.tsv: 1732544 rows (11835 empty, 1720709 non-empty).
+11997.4s 122 
+11997.4s 123 PASS — no blocking issues found. Safe to submit.
+12021.6s 124 S1  matches_per_S1  singleton_share
+12021.6s 125 country
+12021.6s 126 France   259452          3.1723           0.0702
+12021.6s 127 India    809986          3.2845           0.0645
+12021.6s 128 US       663106          3.3595           0.0597
+12021.6s 129 /kaggle/working/download_me_seed2.zip 202.0 MB
+12026.1s 130 /usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\|'
+12026.1s 131 cells[i][c] = re.sub('\\\\\|', '|', cell)
+12026.4s 132 /usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\_'
+12026.4s 133 text = re.sub(r'_', '\_', text) # Escape underscores in display text
+12027.1s 134 [NbConvertApp] Converting notebook __notebook__.ipynb to notebook
+12027.6s 135 [NbConvertApp] Writing 29526 bytes to __notebook__.ipynb
+12030.6s 136 [NbConvertApp] Converting notebook __notebook__.ipynb to html
+12031.8s 137 [NbConvertApp] Writing 320516 bytes to __results__.html

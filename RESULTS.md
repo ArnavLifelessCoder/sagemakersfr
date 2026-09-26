@@ -63,4 +63,26 @@ siblings too (FINDINGS.md 5.7), so v2 is only a partial fix.
   Training (seed 0 log): 74.6 min, slice India 4 states / 271k S1 + US 15 states / 454k S1, validation F0.5
   0.98453 (now includes India, so not comparable with v3's US-only 0.9887), threshold 0.75.
 - Plan: submit the first finished seed alone, then a weighted ensemble of all four (`src/ensemble.py`)
-- Leaderboard (public): _pending_
+- Leaderboard (public): **0.971** for each of seeds 0, 2, 3 (ensemble pending)
+
+### v4 results (seeds 0, 2, 3; each run = train + predict on Kaggle 4 CPU / 30 GB)
+
+| seed | training slice (India / US) | val F0.5 | test-like val F0.5 | threshold | train | predict | public LB |
+|---|---|---|---|---|---|---|---|
+| 0 | 7 states 272k S1 / 15 states 405k S1 | 0.98635 | 0.98579 | 0.800 | 70 min | 126 min | **0.971** |
+| 2 | 10 states 268k S1 / 18 states 530k S1 | 0.98805 | 0.98752 | 0.750 | 80 min | 118 min | **0.971** |
+| 3 | 8 states 292k S1 / 16 states 439k S1 | 0.98707 | 0.98645 | 0.775 | 73 min | 125 min | **0.971** |
+
+- All three score **0.971** on the public LB (+0.024 over v3's 0.947): the gain comes from the
+  India training data and the collective features, not from a lucky seed.
+- Blocking recall on the training slices: 0.981-0.985 (large states; dev slice was 0.994).
+  Stage 1 keeps 0.98-0.99 pairs per query at 99.95% recall of blocked positives.
+- Top features (all seeds): p1_q_gap, p1, lex_extra_min, **peer_num_share_p (#4)**, legal_q_only,
+  ex_qdf_max, p1_s_gap_top, p1_s_ncand, hn_logdiff, first_tok_eq, num_q_only, anc_p1.
+- Predict-time calibration (target = validation predicted/S1 3.34-3.36):
+  - **US now over-matches**: 3.45-3.47 matches/S1 at the base threshold, so calibration raised the US
+    threshold to **0.960-0.976**.
+  - India 3.27-3.28 and France 3.09-3.17 are *below* target (calibration never lowers thresholds).
+  - Singletons: US 6.0%, India 6.5%, **France 7.0-7.2%** (prior 5.6%), which suggests v4 under-matches
+    in France / India (recall) while the US over-matches before calibration.
+- Stage-1 candidate pairs on test: France 1.38-1.41M, India 4.60-5.85M, US 3.65-3.68M.
