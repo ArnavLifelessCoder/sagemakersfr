@@ -86,3 +86,20 @@ siblings too (FINDINGS.md 5.7), so v2 is only a partial fix.
   - Singletons: US 6.0%, India 6.5%, **France 7.0-7.2%** (prior 5.6%), which suggests v4 under-matches
     in France / India (recall) while the US over-matches before calibration.
 - Stage-1 candidate pairs on test: France 1.38-1.41M, India 4.60-5.85M, US 3.65-3.68M.
+
+### v4 ensemble (seeds 0+2+3, `src/ensemble.py`, equal weights)
+- Leaderboard (public): **0.971**, identical to each single seed. The seeds make the same mistakes, so the
+  remaining error is systematic, not variance; more seeds will not help.
+
+## v5 - neighbour-state blocking (predict-only on v4 models)
+- Code: commit `cde27ca`
+- Diagnosis on a labelled full-size TRAIN slice (IN-TG + IN-AP + US-OH, 158k S1, `experiments/diag/`):
+  loss was mostly FN from blocking (0.045 of F0.5); 82% of India's blocking misses were Telangana records
+  written "Andhra Pradesh" (18.5% of all Telangana true pairs in train; DC<->WA similar, small).
+- Fix: S1 partition of a state also searches the queries of its neighbour states; `state_eq` uses state
+  groups so existing models accept these pairs. Slice: India TG/AP ~0.87-0.90 -> 0.984, US 0.990 unchanged.
+- Other ideas tested on the slice and rejected: per-S1 expected-F0.5 decoding (+0.0003 only); rescuing
+  renames / empty-address exact names in France (only ~87% precision, below the ~0.78 break-even of
+  the rejected subset).
+- Runs: predict-only with v4 seed-0 artifacts (SEED 100) and seed-2 artifacts (SEED 102), running.
+- Leaderboard (public): _pending_
