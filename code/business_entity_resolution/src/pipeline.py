@@ -356,8 +356,10 @@ def cmd_predict(a):
         cand, F1, p1 = block_and_cheap(s1, q, cfg, stage1=stage1)
         log(country, "candidate pairs after stage 1:", len(cand))
         p2 = np.zeros(len(cand), np.float32)
+        log(country, "group features (anchor / context / peer) ...")
         anc = group_features(cand, p1, F1, s1, q, cfg)
         vocabs = country_vocabs(s1, q)
+        log(country, "group features done; stage-2 scoring", len(cand), "pairs")
         step = 3_000_000
         for st in range(0, len(cand), step):
             sl = slice(st, st + step)
@@ -366,6 +368,7 @@ def cmd_predict(a):
                                              anc=anc.iloc[sl], vocabs=vocabs)
             M.add_lex(F, extra, miss, lex)
             p2[sl] = bst2.predict(F[feats2].values.astype(np.float32), num_threads=cfg["threads"])
+            log(country, f"  scored {min(st + step, len(cand))}/{len(cand)}")
             del F, extra, miss
             gc.collect()
         res.append(pd.DataFrame({"s1": s1.entity_id.values[cand.si.values],

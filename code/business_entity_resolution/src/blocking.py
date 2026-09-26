@@ -35,11 +35,11 @@ def _identity(x):
     return x
 
 
-def _topk(Q, S_T, k, threads):
+def _topk(Q, S_T, k, threads, min_score=1e-6):
     if Q.shape[0] == 0 or S_T.shape[1] == 0 or k <= 0:
         e = np.zeros((0,), np.int64)
         return e, e, np.zeros((0,), np.float32)
-    C = sp_matmul_topn(Q, S_T, top_n=min(k, S_T.shape[1]), threshold=1e-6, n_threads=threads).tocoo()
+    C = sp_matmul_topn(Q, S_T, top_n=min(k, S_T.shape[1]), threshold=min_score, n_threads=threads).tocoo()
     return C.row.astype(np.int64), C.col.astype(np.int64), C.data.astype(np.float32)
 
 
@@ -62,12 +62,12 @@ class _Index:
             self.Sa = self.av.fit_transform(_addr_docs(S)).tocsr()
             self.SaT = self.Sa.T.tocsr()
 
-    def query(self, Qf, k_name, k_addr, threads):
+    def query(self, Qf, k_name, k_addr, threads, min_score=1e-6):
         Qn = self.nv.transform(Qf.name_core.values).tocsr()
-        r1, c1, _ = _topk(Qn, self.SnT, k_name, threads)
+        r1, c1, _ = _topk(Qn, self.SnT, k_name, threads, min_score)
         if self.av is not None and k_addr > 0:
             Qa = self.av.transform(_addr_docs(Qf)).tocsr()
-            r2, c2, _ = _topk(Qa, self.SaT, k_addr, threads)
+            r2, c2, _ = _topk(Qa, self.SaT, k_addr, threads, min_score)
         else:
             Qa = None
             r2 = c2 = np.zeros((0,), np.int64)
@@ -120,15 +120,15 @@ def iter_candidates(s1, q, k_name=10, k_addr=10, k_name_nostate=10, threads=-1,
         s_nostate = np.flatnonzero(sc & (s_state == ""))
         if len(s_nostate):
             q_st = np.flatnonzero(qc & np.isin(q_state, known))
-            yield f"{country}/s1-nostate", _run(s1, q, s_nostate, q_st, max_df, 3, 3, threads, chunk)
+            yield f"{country}/s1-nostate", _run(s1, q, s_nostate, q_st, max_df, 3, 3, threads, chunk, min_score=0.3)
         log(f"  blocking {country}: {len(states)} states, {qc.sum()} queries, {len(q_rest)} without state")
 
 
-def _run(s1, q, s_idx, q_idx, max_df, k_name, k_addr, threads, chunk):
+def _run(s1, q, s_idx, q_idx, max_df, k_name, k_addr, threads, chunk, min_score=1e-6):
     idx = _Index(s1.iloc[s_idx], max_df)
     out = []
     for a in range(0, len(q_idx), chunk):
         qq = q_idx[a:a + chunk]
-        r, c, nc, ac = idx.query(q.iloc[qq], k_name, k_addr, threads)
+        r, c, nc, ac = idx.query(q.iloc[qq], k_name, k_addr, threads, min_score)
         out.append(pd.DataFrame({"qi": qq[r], "si": s_idx[c], "name_cos": nc, "addr_cos": ac}))
     return pd.concat(out, ignore_index=True)

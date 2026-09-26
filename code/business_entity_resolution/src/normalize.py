@@ -149,7 +149,7 @@ def parse_address(addr, country):
            "city": "", "empty": 1}
     if not isinstance(addr, str) or not addr.strip():
         return out
-    comps = [c.strip() for c in addr.split(",")]
+    comps = [c.strip().strip('"').strip() for c in addr.replace('""', '"').split(",")]
     comps = [c for c in comps if c and not _is_null(c)]
     if not comps:
         return out
