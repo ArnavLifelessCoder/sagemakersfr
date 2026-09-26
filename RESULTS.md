@@ -51,7 +51,9 @@ siblings too (FINDINGS.md 5.7), so v2 is only a partial fix.
 
 ## v4 - stratified training + collective peer features + test-like threshold (4 parallel seeds)
 - Code: commit `8fc0d46` (+ weighted `src/ensemble.py`)
-- Training slice stratified per country; `train_frac` 0.3 (seeds 0, 1, 2) and 0.5 (seed 3)
+- Training slice stratified per country; `train_frac` 0.3 (seeds 0, 1, 2, 3)
+- Seed 3 was first run with `train_frac` 0.5 and ran out of memory after ~49 min (Kaggle 30 GB);
+  rerun at 0.3. Keep `train_frac` <= 0.3 on 4-CPU / 30 GB sessions.
 - New: peer features (siblings repeat their modifier word / new number across their records),
   threshold tuned with false merges x1.7 (test distractor density)
 - Dev: F0.5 0.9919 (test-like 0.9911); `peer_num_share_p` is the #4 feature
