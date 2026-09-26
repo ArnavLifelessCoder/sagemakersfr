@@ -20,6 +20,8 @@ from .data import write_id_lists
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--runs", nargs="+", required=True)
+    ap.add_argument("--weights", nargs="+", type=float, default=None,
+                    help="one weight per run (e.g. more for a model trained on more data)")
     ap.add_argument("--test-dir", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--threshold", type=float, default=None)
@@ -38,10 +40,12 @@ def main():
             targets.append(m.get("target_mps", 3.375))
         print(f"run {r}: {len(d)} pairs")
     allp = pd.concat(frames, axis=1, join="outer").fillna(0.0)
-    allp["p"] = allp.mean(axis=1)
+    w = np.array(a.weights if a.weights else [1.0] * len(a.runs), dtype=float)
+    w = w / w.sum()
+    allp["p"] = allp[[f"p{k}" for k in range(len(a.runs))]].values @ w
     allp = allp.reset_index()
-    thr = a.threshold if a.threshold is not None else float(np.mean(thrs)) if thrs else 0.7
-    target = float(np.mean(targets)) if targets else 3.375
+    thr = a.threshold if a.threshold is not None else float(np.dot(w[:len(thrs)], thrs) / w[:len(thrs)].sum()) if thrs else 0.7
+    target = float(np.dot(w[:len(targets)], targets) / w[:len(targets)].sum()) if targets else 3.375
     s1 = pd.read_csv(os.path.join(a.test_dir, "test_source1.tsv"), sep="\t", dtype=str,
                      keep_default_na=False, usecols=["entity_id", "country"], quoting=3)
     ctry = dict(zip(s1.entity_id, s1.country))

@@ -43,5 +43,17 @@ siblings too (FINDINGS.md 5.7), so v2 is only a partial fix.
 - Code: commits `59b53c6`, `397a734`, `4030128` (notebook bundle)
 - Dev validation F0.5: 0.9916 (v2 model 0.9907). On a real test slice it rejects the v2 sibling false merges
   (FINDINGS.md 5.8).
-- Kaggle: full train + predict, running
+- Kaggle: train 55 min + predict 120 min; model validation F0.5 0.9887 (threshold 0.725)
+- Per country: France 3.263 matches/S1 (6.1% singletons), India 3.365 (5.6%), US 3.384 (5.8%)
+- Leaderboard (public): **0.947**
+- **Bug found in the log:** the training slice held 18 US states and 1 tiny India state (716 queries) -
+  v1-v3 were trained essentially without India (47% of test).
+
+## v4 - stratified training + collective peer features + test-like threshold (4 parallel seeds)
+- Code: commit `8fc0d46` (+ weighted `src/ensemble.py`)
+- Training slice stratified per country; `train_frac` 0.3 (seeds 0, 1, 2) and 0.5 (seed 3)
+- New: peer features (siblings repeat their modifier word / new number across their records),
+  threshold tuned with false merges x1.7 (test distractor density)
+- Dev: F0.5 0.9919 (test-like 0.9911); `peer_num_share_p` is the #4 feature
+- Plan: submit the first finished seed alone, then a weighted ensemble of all four (`src/ensemble.py`)
 - Leaderboard (public): _pending_
