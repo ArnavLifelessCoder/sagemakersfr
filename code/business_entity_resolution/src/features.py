@@ -309,7 +309,8 @@ def peer_features(cand, p1, s1, q):
             i = idx[0]
             out[i, 5], out[i, 6], out[i, 7] = len(ex[i]), len(nn[i]), 1
             continue
-        tok_c, tok_p, num_c, num_p = {}, {}, {}, {}
+        # linear in the group size (some S1 with generic names collect thousands of candidates)
+        tok_c, tok_p, num_c, num_p, both_c = {}, {}, {}, {}, {}
         for i in idx:
             for t in ex[i]:
                 tok_c[t] = tok_c.get(t, 0) + 1
@@ -317,6 +318,10 @@ def peer_features(cand, p1, s1, q):
             for x in nn[i]:
                 num_c[x] = num_c.get(x, 0) + 1
                 num_p[x] = num_p.get(x, 0.0) + p1[i]
+            if ex[i] and nn[i] and len(ex[i]) * len(nn[i]) <= 64:
+                for t in ex[i]:
+                    for x in nn[i]:
+                        both_c[(t, x)] = both_c.get((t, x), 0) + 1
         for i in idx:
             if ex[i]:
                 out[i, 0] = max(tok_c[t] for t in ex[i]) - 1
@@ -324,8 +329,9 @@ def peer_features(cand, p1, s1, q):
             if nn[i]:
                 out[i, 2] = max(num_c[x] for x in nn[i]) - 1
                 out[i, 3] = max(num_p[x] for x in nn[i]) - p1[i]
-            if ex[i] and nn[i]:
-                out[i, 4] = sum(1 for j in idx if j != i and (ex[i] & ex[j]) and (nn[i] & nn[j]))
+            if ex[i] and nn[i] and len(ex[i]) * len(nn[i]) <= 64:
+                # peers sharing the same (extra token, new number) combination
+                out[i, 4] = max(both_c[(t, x)] for t in ex[i] for x in nn[i]) - 1
             out[i, 5], out[i, 6], out[i, 7] = len(ex[i]), len(nn[i]), len(idx)
     return pd.DataFrame(out, columns=PEER_FEATS, index=cand.index)
 

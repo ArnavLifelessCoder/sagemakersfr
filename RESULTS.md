@@ -57,5 +57,10 @@ siblings too (FINDINGS.md 5.7), so v2 is only a partial fix.
 - New: peer features (siblings repeat their modifier word / new number across their records),
   threshold tuned with false merges x1.7 (test distractor density)
 - Dev: F0.5 0.9919 (test-like 0.9911); `peer_num_share_p` is the #4 feature
+- **Perf bug (commit after `d477d24`):** the pairwise `peer_both` loop was quadratic per S1; India test has S1s with
+  thousands of candidates (country-wide no-state search), so predict stalled for hours after India stage 1.
+  Fixed with a linear (token, number)-combination count; 520k pairs incl. a 20k-candidate group in 19 s.
+  Training (seed 0 log): 74.6 min, slice India 4 states / 271k S1 + US 15 states / 454k S1, validation F0.5
+  0.98453 (now includes India, so not comparable with v3's US-only 0.9887), threshold 0.75.
 - Plan: submit the first finished seed alone, then a weighted ensemble of all four (`src/ensemble.py`)
 - Leaderboard (public): _pending_
