@@ -341,6 +341,23 @@ per-S1 F0.5 loss split by cause (`err_decomp.py`):
   ~0.034/S1 at ~44% precision -> `postprocess.sibling_signature` drops it (US only): ~+0.0025 US.
 - Transitive rescue (copy of an accepted record) was measured and rejected (-0.0011, 41% precision).
 
+### 5.16 Sibling entities are sub-clusters ('trees'); France loses on word swaps (seed-202 scores, 2026-09-27)
+- A teammate's hint 'trees'. Checked: test sibling businesses are generated like real ones - a neighbouring entity
+  (house number +-1..20, sometimes a digit changed, or one name word swapped) with 2-4 noisy records of its own
+  across S2/S3. Under one S1: camp A agrees with S1, camp B agrees with itself on a different number/word.
+- US 'camp B, same core name, different number' per S1: 0.5-0.9 test 0.036 vs ref 0.0006 (est. precision 0.02),
+  0.9-0.99 0.019 vs 0.0017 (0.09); >=0.99 matches the reference. France similar but smaller; India shows NO excess
+  in any cell. Peer features learned 'several records agree on a new number = outdated S1 (true)' from training, which
+  is why the model accepts these clusters. Code: src/postprocess.camp_b, src/camp_drop.py; diag: two_camp.py.
+- Most of camp B sits below the model's accept threshold already -> estimated gain of dropping it only +0.001-0.002.
+- Record budget: training has 3.46 true per S1 in US and India (identical). Test assigned per S1: US 3.35,
+  India 3.33, France 3.03-3.21. France has 0.38/S1 fewer pairs at p>=0.999 than the US and more in every band below.
+- France one-word differences at p>=0.99: swapped word 0.145/S1 vs 0.385 in the reference, added word 0.014 vs 0.077.
+  Typos (string ratio >= 80) are true but rare (0.005/S1 in 0.5-0.99). Word swaps (ratio < 60) are 0.17/S1 in 0.3-0.99
+  vs 0.022 in the reference, and the reference has 0.21/S1 TRUE word swaps at >=0.99: the noise generator replaces
+  name words in true matches too. So France's middle band mixes true word swaps with sibling word swaps; the model,
+  never trained on French words, cannot tell them apart, and a blanket 0.99 cut drops both (v6).
+
 ## 6. Running it on Kaggle
 - Upload the challenge zip and this code folder as two private Datasets. Run
   `code/business_entity_resolution/kaggle_run.ipynb`. Internet must be ON (pip installs rapidfuzz,

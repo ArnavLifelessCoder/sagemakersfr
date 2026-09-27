@@ -131,3 +131,11 @@ siblings too (FINDINGS.md 5.7), so v2 is only a partial fix.
 - Dev run (train slice): 21,247 synthetic records (0.18 per S1; US 11.8k, India 9.4k); blocking recall 0.994;
   validation including the synthetics F0.5 0.9900 plain, 0.9889 test-like, at threshold 0.75.
 - Kaggle: SEED 7, FORCE_TRAIN, train_frac 0.3, train + predict in one notebook (~4.5 h). Leaderboard: _pending_
+
+## v7 - raw seed 202 (v4 seed-2 model + wider blocking + OCR fold, model's own calibration)
+- Matches per S1: France 3.209, India 3.350, US 3.360. Leaderboard (public): **0.978** (best so far).
+- Lesson: v6 (same model family, older blocking, blanket thresholds France 0.99 / US 0.96 / India 0.9) scored 0.974;
+  the blocking/OCR change is worth ~+0.002 in-distribution, so the blanket thresholds likely COST ~0.002.
+  France's 0.5-0.99 band holds true word-swap matches as well as siblings (FINDINGS 5.16). Trust the model's calibration.
+- Built but not submitted: raw 202 + camp-B drop (src/camp_drop.py); estimated +0.001-0.002 (ceiling ~+0.004).
+
