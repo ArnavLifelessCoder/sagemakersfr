@@ -210,11 +210,49 @@ def load_train(a, cfg):
     sl, s1_sel = select_training_slice(src, pairs, cfg["train_frac"], cfg["seed"])
     del src
     gc.collect()
-    return sl.drop(columns=["state", "addr_empty"]), pairs, tr, s1_sel
+    sl = sl.drop(columns=["state", "addr_empty"])
+    if cfg.get("pseudo_scores"):
+        sl, pairs, s1_sel = add_pseudo(a, cfg, sl, pairs, s1_sel)
+    return sl, pairs, tr, s1_sel
+
+
+PSEUDO = "P"  # suffix of pseudo-labelled test entity ids: never validation, never collide with train ids
+
+
+def add_pseudo(a, cfg, sl, pairs, s1_sel):
+    """Pseudo-labelled TEST records of a country without training data (France): a random share of its S1,
+    records a previous model assigned to them with p >= pseudo_pos as matches, records whose best score is
+    below pseudo_neg (or never scored) as unmatched distractors (same share); everything in between is left out.
+    Gives the model French names, addresses and token statistics; augment.py then also builds French siblings."""
+    c, frac = cfg.get("pseudo_country", "France"), cfg.get("pseudo_frac", 0.5)
+    ts = read_sources(a.data_dir, "test")
+    ts = ts[ts.country.values == c].reset_index(drop=True)
+    sc = pd.read_parquet(cfg["pseudo_scores"], columns=["s1", "q", "p", "country"])
+    sc = sc[sc.country.values == c]
+    best = sc.sort_values("p", ascending=False).drop_duplicates("q")
+    del sc
+    rnd = lambda ids, salt: np.array([zlib.crc32((x + salt).encode()) % 1000 < frac * 1000 for x in ids])
+    is_s1 = ts.src.values == 1
+    ids = ts.entity_id.values
+    s1_keep = set(ids[is_s1 & rnd(ids, "s")])
+    pos = best[(best.p.values >= cfg.get("pseudo_pos", 0.99)) & best.s1.isin(s1_keep).values]
+    pos_q = set(pos.q.values)
+    scored_hi = set(best.q.values[best.p.values >= cfg.get("pseudo_neg", 0.05)])
+    neg = (~is_s1) & ~pd.Series(ids).isin(scored_hi).values & rnd(ids, "n")
+    keep = (is_s1 & pd.Series(ids).isin(s1_keep).values) | pd.Series(ids).isin(pos_q).values | neg
+    ps = ts[keep].reset_index(drop=True)
+    ps["entity_id"] = ps.entity_id.values + PSEUDO
+    pp = pd.DataFrame({"s1": pos.s1.values + PSEUDO, "other": pos.q.values + PSEUDO})
+    log(f"pseudo-labelled {c}: {len(s1_keep)} S1, {len(pp)} matches ({len(pp) / max(1, len(s1_keep)):.3f}/S1), "
+        f"{int(neg.sum())} distractors ({neg.sum() / max(1, len(s1_keep)):.3f}/S1) from {cfg['pseudo_scores']}")
+    del ts, best
+    gc.collect()
+    return (pd.concat([sl, ps[sl.columns]], ignore_index=True), pd.concat([pairs, pp], ignore_index=True),
+            set(s1_sel) | {x + PSEUDO for x in s1_keep})
 
 
 def _is_val(ids, pct):
-    return np.array([zlib.crc32(x.encode()) % 100 < pct for x in ids])
+    return np.array([(not x.endswith(PSEUDO)) and zlib.crc32(x.encode()) % 100 < pct for x in ids])
 
 
 def cmd_train(a):
@@ -297,7 +335,7 @@ def cmd_train(a):
     p2 = np.empty(len(F), np.float32)
     p2[trn] = bst2.predict(Ftr[feats2].values.astype(np.float32), num_iteration=best_it)
     p2[is_val] = bst2.predict(Fv[feats2].values.astype(np.float32), num_iteration=best_it)
-    val_ents = [s for s in s1_sel if zlib.crc32(s.encode()) % 100 < cfg["val_pct"]]
+    val_ents = [s for s in s1_sel if not s.endswith(PSEUDO) and zlib.crc32(s.encode()) % 100 < cfg["val_pct"]]
     truth_map = M.to_mapping(pairs.s1.values, pairs.other.values)
     best = (0.0, 0.5)
     for t in np.arange(0.3, 0.951, 0.025):
@@ -357,7 +395,7 @@ def cmd_predict(a):
     bst2 = lgb.Booster(model_file=os.path.join(a.work, "stage2.txt"))
     stage1 = (bst1, meta["features1"], meta["stage1_threshold"])
     feats2 = meta["features2"]
-    log(f"CODE VERSION v7 | k_block={cfg['k_block']} k_keep={cfg['k_keep']} | neighbour states + OCR fold on")
+    log(f"CODE VERSION v9 | k_block={cfg['k_block']} k_keep={cfg['k_keep']} | neighbour states + OCR fold on")
     src = read_sources(a.data_dir, "test")
     log("loaded test", len(src), src.country.value_counts().to_dict())
     s1_order = src.entity_id.values[src.src.values == 1].copy()

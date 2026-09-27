@@ -139,3 +139,13 @@ siblings too (FINDINGS.md 5.7), so v2 is only a partial fix.
   France's 0.5-0.99 band holds true word-swap matches as well as siblings (FINDINGS 5.16). Trust the model's calibration.
 - Built but not submitted: raw 202 + camp-B drop (src/camp_drop.py); estimated +0.001-0.002 (ceiling ~+0.004).
 
+
+## v9 - v8 + pseudo-labelled France (domain adaptation for the country without training data)
+- France is the biggest leak (FINDINGS 5.16): the model never saw French names/addresses/tokens. v9 adds ~half of the
+  France test S1 as training entities: records the seed-202 model assigned with p >= 0.99 are matches, records whose
+  best score is < 0.05 (or never scored) are distractors, the uncertain middle is left out. Pseudo S1 never enter
+  validation (threshold/calibration on real labels only). augment.py then also builds French siblings from real
+  French names (type A French legal forms + number shift, type B French word swap).
+- Local end-to-end test (train_frac 0.01, 5% of France): 12,921 pseudo S1, 2.93 matches/S1, 1.91 distractors/S1;
+  2,909 French synthetic siblings; blocking recall 0.9986; validation (real only) F0.5 0.9904.
+- Kaggle: SEED 9, train_frac 0.25, pseudo_frac 0.5, seed-202 bundle attached. Leaderboard: _pending_
