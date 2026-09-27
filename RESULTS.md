@@ -174,6 +174,6 @@ siblings too (FINDINGS.md 5.7), so v2 is only a partial fix.
   24/24 sampled look true: street typos ('Propraétaires', 'Mguuet', 'RTSPAIL', 'Wisnton') that the address channel
   missed while the name channel was full of same-name businesses. Only these are added to v8; nothing removed.
 - France 3.087 -> 3.104 matches/S1, singletons 6.71% -> 6.57%. Validator PASS. File: submissions/v10_v8_plus_newcand.
-- Expected +0.0005-0.001 over v8 (0.977). Leaderboard: _pending_
+- Expected ~+0.0003 over v8 (0.977) -> not submitted. FINAL BEST: v8 = 0.977.
 - Rejected tonight: exact-twin rescue (same name + number + street, unassigned) - samples are mostly siblings with a
   changed sub-number (N5490 vs N5479, Flat A/1025 vs A/1014) that the model correctly rejects.
