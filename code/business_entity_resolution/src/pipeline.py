@@ -35,7 +35,8 @@ from .prep import parse_frame, learn_translit, extend_translit
 
 T0 = time.time()
 DEFAULT_CFG = dict(k_block=10, k_keep=5, threads=-1, workers=os.cpu_count() or 4, train_frac=0.3,
-                   val_pct=20, seed=0, rounds=3000, s1_recall=0.9995, refit_full=False, lex_drop=0.4, fp_weight=1.7)
+                   val_pct=20, seed=0, rounds=3000, s1_recall=0.9995, refit_full=False, lex_drop=0.4, fp_weight=1.7,
+                   aug_rate_a=0.15, aug_rate_b=0.10)
 
 
 PREDICT_K_BLOCK, PREDICT_K_KEEP = 20, 10
@@ -224,6 +225,11 @@ def cmd_train(a):
         cfg["workers"] = a.workers
     os.makedirs(a.work, exist_ok=True)
     src, pairs, tr, s1_sel = load_train(a, cfg)
+    if cfg.get("aug_rate_a", 0) > 0 or cfg.get("aug_rate_b", 0) > 0:
+        from .augment import make_siblings
+        syn = make_siblings(src[["entity_id", "business_name", "business_address", "country", "src"]], pairs,
+                            cfg["aug_rate_a"], cfg["aug_rate_b"], seed=cfg["seed"], log=log)
+        src = pd.concat([src, syn[src.columns.intersection(syn.columns)]], ignore_index=True)
     json.dump(tr, open(os.path.join(a.work, "translit.json"), "w", encoding="utf-8"), ensure_ascii=False)
     log("translit entries", len(tr), "| training records", len(src), "S1", len(s1_sel))
     src = slim(parse_frame(src, extend_translit(tr, src.business_name.values), workers=cfg["workers"]))
