@@ -103,3 +103,19 @@ siblings too (FINDINGS.md 5.7), so v2 is only a partial fix.
   the rejected subset).
 - Runs: predict-only with v4 seed-0 artifacts (SEED 100) and seed-2 artifacts (SEED 102), running.
 - Leaderboard (public): _pending_
+- Seed 100 turned out to run the OLD code (identical to v4 seed 0, 8 of 5.67M pairs differ); seed 102 has the
+  fix (India 3.284 -> 3.326 matches/S1 = recovered Telangana records). Submission file: submissions/v5_seed102.
+
+## v6 - band-aware per-country thresholds + structural rescue (post-processing on v5 seed-102 scores)
+- Code: `src/postprocess.py`; analysis scripts `experiments/diag/bands.py`, `band_look*.py`, `nearnum_*.py`
+- Evidence: records per S1 per probability band, test vs a labelled train-like slice (same pipeline):
+  US top band 3.294 vs 3.295 (identical), but US 0.775-0.97 bands inflated 2-4x -> est. precision 25-55%;
+  India close to training (0.775-0.9 est. precision 0.66-0.69); France top band 2.895 (0.4/S1 lower) and
+  0.775-0.99 inflated 4-6x. Hand check of 44 accepted France pairs in 0.775-0.99: 28 siblings (Développement,
+  Groupe, & Fils, France, word swaps, SASU with new number), 16 true, all of three kinds: initials,
+  rename at the exact address, empty address with exactly the S1 name.
+- A 'near-number sibling' hard rule was rejected: on train-like data the flagged accepted pairs are 98.7% true.
+- v6: thresholds France 0.99, India 0.9, US 0.96 (= seed-102 calibration); rescue down to p >= 0.5 of
+  initials / rename-at-exact-address / empty-address-exact-name (France 29k, India 12k, US 15k pairs).
+- Matches per S1: France 3.172 -> 3.006, India 3.326 -> 3.312, US 3.360 -> 3.385. Validator PASS.
+- Leaderboard (public): _pending_ (file: submissions/v6_bandfix)
