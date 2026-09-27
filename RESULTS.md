@@ -118,4 +118,16 @@ siblings too (FINDINGS.md 5.7), so v2 is only a partial fix.
 - v6: thresholds France 0.99, India 0.9, US 0.96 (= seed-102 calibration); rescue down to p >= 0.5 of
   initials / rename-at-exact-address / empty-address-exact-name (France 29k, India 12k, US 15k pairs).
 - Matches per S1: France 3.172 -> 3.006, India 3.326 -> 3.312, US 3.360 -> 3.385. Validator PASS.
-- Leaderboard (public): _pending_ (file: submissions/v6_bandfix)
+- Leaderboard (public): 0.974 (file: submissions/v6_bandfix) - thresholding alone can't remove siblings the
+  model is confident about.
+
+## v8 - retrain with synthetic test-style sibling distractors (augment.py)
+- Idea: test has a sibling type training barely contains (US: same core name + legal form changed + house number
+  within +-20, about 35x over-represented in the 0.5-0.9 band; France: same address with one name word swapped).
+  The model learned training odds and accepts them. Fix at the source: make such records from REAL true S2/S3
+  records of training S1s (so they keep the source's noise) and add them to training as unmatched records.
+  - type A (rate 0.15 per S1): legal form stripped/replaced + house number shifted 1..20
+  - type B (rate 0.10 per S1): one core name word swapped for a common name word of the same country
+- Dev run (train slice): 21,247 synthetic records (0.18 per S1; US 11.8k, India 9.4k); blocking recall 0.994;
+  validation including the synthetics F0.5 0.9900 plain, 0.9889 test-like, at threshold 0.75.
+- Kaggle: SEED 7, FORCE_TRAIN, train_frac 0.3, train + predict in one notebook (~4.5 h). Leaderboard: _pending_
