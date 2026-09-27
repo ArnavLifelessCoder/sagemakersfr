@@ -160,3 +160,20 @@ siblings too (FINDINGS.md 5.7), so v2 is only a partial fix.
   (France 'no match' S1 6.87% -> 6.10%). Local end-to-end test passed (validation F0.5 0.9908 on a tiny slice).
 - Checked and rejected tonight: India never-scored records (0.61/S1, 57% native-script names) have no S1 twin -
   distractors, not a recall leak; true singleton rate 5.58% in train vs 5.9% predicted - no singleton lever.
+
+### v9 outcome (run locally: train_frac 0.05 + 40% of France pseudo-labelled, France-only predict, 20:29-22:33)
+- Validation (real labels) F0.5 0.98828. France: 3.038 matches/S1, 6.95% singletons (v8 3.087 / 6.71%).
+- Hand check of 28 France pairs where v9 and v8 disagree: v9 DROPS mostly true matches (empty-address exact names,
+  street typos, initials - the old model's pseudo-label biases) and ADDS mostly siblings ('Et Fils', '& Fils',
+  'Groupe'). Net ~13k fewer true matches -> v9 France is worse than v8. NOT submitted.
+- France has 501k of 1.43M records without a recognised region (departments: Gironde, Nord, Loire-Atlantique ...):
+  they are searched country-wide - slow and tie-heavy. Mapping departments to regions is the obvious next fix.
+
+## v10 - v8 + the combined channel's new France candidates
+- v9-accepted France pairs that were NOT v8 candidates and whose record v8 left unassigned: 4,319 (0.017/S1).
+  24/24 sampled look true: street typos ('Propraétaires', 'Mguuet', 'RTSPAIL', 'Wisnton') that the address channel
+  missed while the name channel was full of same-name businesses. Only these are added to v8; nothing removed.
+- France 3.087 -> 3.104 matches/S1, singletons 6.71% -> 6.57%. Validator PASS. File: submissions/v10_v8_plus_newcand.
+- Expected +0.0005-0.001 over v8 (0.977). Leaderboard: _pending_
+- Rejected tonight: exact-twin rescue (same name + number + street, unassigned) - samples are mostly siblings with a
+  changed sub-number (N5490 vs N5479, Flat A/1025 vs A/1014) that the model correctly rejects.

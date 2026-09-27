@@ -401,6 +401,9 @@ def cmd_predict(a):
     s1_order = src.entity_id.values[src.src.values == 1].copy()
     res = []
     only = cfg.get("predict_countries")
+    if only:  # keep all S1 ids in the output (empty rows elsewhere) but free the other countries' records
+        src = src[src.country.isin(only).values].reset_index(drop=True)
+        gc.collect()
     for country in sorted(src.country.unique()):
         if only and country not in only:
             log(country, "skipped (predict_countries =", only, ")")
