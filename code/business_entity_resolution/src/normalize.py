@@ -307,6 +307,15 @@ def _fuzzy_legal(t):
     return r or None
 
 
+# OCR-style confusions produced by the generator inside names: "rn" read as "m" (Salerno/Salemo,
+# Northern/Northem) and "I" read as "l" (lnsurance, PLATlNUM). Folding both sides makes these exact.
+OCR_FOLD = True
+
+
+def ocr_fold(t):
+    return t.replace("rn", "m").replace("ln", "in")
+
+
 def parse_name(name, translit=None):
     """Return dict: core tokens, legal set, variants, flags.
 
@@ -358,6 +367,8 @@ def parse_name(name, translit=None):
         i += 1
     if not core and legal:  # name was only legal words, keep them as core
         core = [t for t in toks if t not in HONORIFIC]
+    if OCR_FOLD:
+        core = [ocr_fold(t) for t in core]
     out["core"] = tuple(core)
     out["legal"] = tuple(sorted(set(legal)))
     if alt:

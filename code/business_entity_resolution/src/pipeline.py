@@ -38,6 +38,9 @@ DEFAULT_CFG = dict(k_block=10, k_keep=5, threads=-1, workers=os.cpu_count() or 4
                    val_pct=20, seed=0, rounds=3000, s1_recall=0.9995, refit_full=False, lex_drop=0.4, fp_weight=1.7)
 
 
+PREDICT_K_BLOCK, PREDICT_K_KEEP = 20, 10
+
+
 def log(*a):
     print(f"[{time.time() - T0:8.1f}s]", *a, flush=True)
 
@@ -331,10 +334,19 @@ def cmd_predict(a):
         cfg["threads"] = a.threads
     if a.workers:
         cfg["workers"] = a.workers
+    # wider blocking at prediction time (measured on a labelled slice: blocking loss 0.0045 -> 0.0024)
+    cfg["k_block"], cfg["k_keep"] = max(cfg["k_block"], PREDICT_K_BLOCK), max(cfg["k_keep"], PREDICT_K_KEEP)
+    if a.k_block:
+        cfg["k_block"] = a.k_block
+    if a.k_keep:
+        cfg["k_keep"] = a.k_keep
     thr = a.threshold if a.threshold is not None else meta["threshold"]
     meta.setdefault("target_mps", 3.375)  # older artifacts: training prior 3.46 x ~0.975 recall ratio
     tr = json.load(open(os.path.join(a.work, "translit.json"), encoding="utf-8"))
     lex = json.load(open(os.path.join(a.work, "lexicon.json")))
+    from .normalize import OCR_FOLD, ocr_fold
+    if OCR_FOLD:  # lexicon keys must live in the same folded token space as the parsed names
+        lex = {kind: {(t if t.startswith("L:") else ocr_fold(t)): v for t, v in d.items()} for kind, d in lex.items()}
     bst1 = lgb.Booster(model_file=os.path.join(a.work, "stage1.txt"))
     bst2 = lgb.Booster(model_file=os.path.join(a.work, "stage2.txt"))
     stage1 = (bst1, meta["features1"], meta["stage1_threshold"])
@@ -368,6 +380,14 @@ def cmd_predict(a):
                                              anc=anc.iloc[sl], vocabs=vocabs)
             M.add_lex(F, extra, miss, lex)
             p2[sl] = bst2.predict(F[feats2].values.astype(np.float32), num_threads=cfg["threads"])
+            if a.dump_features:
+                dump = F[feats2].copy()
+                dump["s1"] = s1.entity_id.values[cand.si.values[sl]]
+                dump["q"] = q.entity_id.values[cand.qi.values[sl]]
+                dump["extra"] = extra
+                dump["miss"] = miss
+                os.makedirs(a.out, exist_ok=True)
+                dump.to_parquet(os.path.join(a.out, f"features_{country}_{st}.parquet"), index=False)
             log(country, f"  scored {min(st + step, len(cand))}/{len(cand)}")
             del F, extra, miss
             gc.collect()
@@ -432,6 +452,9 @@ def main():
     p.add_argument("--threads", type=int, default=None)
     p.add_argument("--workers", type=int, default=None)
     p.add_argument("--no-scores", action="store_true", help="do not write pair_scores.parquet")
+    p.add_argument("--k-block", type=int, default=None, help="override blocking top-K per channel")
+    p.add_argument("--dump-features", action="store_true", help="write stage-2 features (debugging)")
+    p.add_argument("--k-keep", type=int, default=None, help="override candidates kept per channel")
     p.add_argument("--calibrate", choices=["shape", "none"], default="shape",
                    help="per-country threshold calibration to the training cluster-size prior")
     a = ap.parse_args()
