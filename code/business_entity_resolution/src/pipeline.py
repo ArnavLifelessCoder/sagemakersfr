@@ -395,7 +395,7 @@ def cmd_predict(a):
     bst2 = lgb.Booster(model_file=os.path.join(a.work, "stage2.txt"))
     stage1 = (bst1, meta["features1"], meta["stage1_threshold"])
     feats2 = meta["features2"]
-    log(f"CODE VERSION v9 | k_block={cfg['k_block']} k_keep={cfg['k_keep']} | neighbour states + OCR fold on")
+    log(f"CODE VERSION v9 | k_block={cfg['k_block']} k_keep={cfg['k_keep']} | neighbour states + OCR fold + combined name+address channel on")
     src = read_sources(a.data_dir, "test")
     log("loaded test", len(src), src.country.value_counts().to_dict())
     s1_order = src.entity_id.values[src.src.values == 1].copy()

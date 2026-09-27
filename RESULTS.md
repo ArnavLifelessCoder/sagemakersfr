@@ -153,3 +153,10 @@ siblings too (FINDINGS.md 5.7), so v2 is only a partial fix.
 - Kaggle: SEED 9, train_frac 0.25, pseudo_frac 0.5, seed-202 bundle attached, predict France only
   (`predict_countries`; ~1h45m instead of ~3h20m). Final file = v9 France + v8 US/India
   (`src/merge_countries.py`). Leaderboard: _pending_
+- Also in v9: a third blocking channel, combined name+address TF-IDF (cosine = (name_cos + addr_cos) / 2). France
+  names are generic (one core name shared by many businesses: 35% of France's never-scored records have an S1 with
+  the identical core name, vs 14% in the US) and addresses hold many businesses, so the separate top-K lists are full
+  of ties; the S1 agreeing on both now ranks first. Idea also found independently by a teammate's session
+  (France 'no match' S1 6.87% -> 6.10%). Local end-to-end test passed (validation F0.5 0.9908 on a tiny slice).
+- Checked and rejected tonight: India never-scored records (0.61/S1, 57% native-script names) have no S1 twin -
+  distractors, not a recall leak; true singleton rate 5.58% in train vs 5.9% predicted - no singleton lever.

@@ -18,6 +18,9 @@ import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sparse_dot_topn import sp_matmul_topn
+import scipy.sparse as sp
+
+COMB_W = 0.5 ** 0.5
 
 
 def _addr_docs(df):
@@ -61,6 +64,9 @@ class _Index:
                                       max_df=max_df if len(S) > 2000 else 1.0)
             self.Sa = self.av.fit_transform(_addr_docs(S)).tocsr()
             self.SaT = self.Sa.T.tocsr()
+            # combined channel: cosine = (name_cos + addr_cos) / 2. Breaks the ties of generic names shared by many
+            # businesses (France) and of addresses holding many businesses: the S1 agreeing on BOTH ranks first.
+            self.ScT = (sp.hstack([self.Sn, self.Sa]).tocsr() * np.float32(COMB_W)).T.tocsr()
 
     def query(self, Qf, k_name, k_addr, threads, min_score=1e-6):
         Qn = self.nv.transform(Qf.name_core.values).tocsr()
@@ -68,10 +74,12 @@ class _Index:
         if self.av is not None and k_addr > 0:
             Qa = self.av.transform(_addr_docs(Qf)).tocsr()
             r2, c2, _ = _topk(Qa, self.SaT, k_addr, threads, min_score)
+            Qc = sp.hstack([Qn, Qa]).tocsr() * np.float32(COMB_W)
+            r3, c3, _ = _topk(Qc, self.ScT, max(k_name, k_addr), threads, min_score)
         else:
             Qa = None
-            r2 = c2 = np.zeros((0,), np.int64)
-        pairs = np.unique(np.concatenate([r1 * (1 << 32) + c1, r2 * (1 << 32) + c2]))
+            r2 = c2 = r3 = c3 = np.zeros((0,), np.int64)
+        pairs = np.unique(np.concatenate([r1 * (1 << 32) + c1, r2 * (1 << 32) + c2, r3 * (1 << 32) + c3]))
         r = pairs >> 32
         c = pairs & ((1 << 32) - 1)
         name_cos = _rowdot(Qn[r], self.Sn[c]) if len(r) else np.zeros(0, np.float32)
