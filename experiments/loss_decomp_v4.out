@@ -1,0 +1,210 @@
+validation entities 23384  macro F0.5 0.99163  total loss 0.00837  threshold 0.75
+category                          loss   share   count
+fn_below_threshold             0.00472   56.4%    1055
+fn_blocking                    0.00186   22.3%     504
+fp_distractor                  0.00081    9.7%      85
+singleton_given_match          0.00047    5.6%      11
+fp_belongs_to_other_s1         0.00039    4.6%      44
+fn_stage1                      0.00011    1.3%      34
+fn_assigned_elsewhere          0.00001    0.1%       2
+
+===== singleton_given_match: 11 cases, 6 examples
+  S1 S1-404463409 ('Dynamic Constructions LLP', 'Pp Vii 639, 640, Opposite To Seeta Devi Temple Thannitheruvu Road, Pulpally P.O, Sulthan Bathery, Wayanad, Kerala')   loss 1.00
+     FALSE S3-385336934 ('ഡൈനാമിക് കൺസ്ട്രക്ഷൻ എൽഎൽപി', 'Pp Vii 640, Sulthan Bathery, Wayanad, KL')  p2=0.993 assigned_to=self
+          p2=0.99 p1=0.98 p1_q_gap=0.98 n_tset=97.56 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.50 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=0.00 q_addr_empty=0.00 q_native=1.00  extra='' miss=''
+  S1 S1-512102837 ('Lantern Inc.', '360 Tower Road, Belgrade, MT')   loss 1.00
+     FALSE S3-647416758 ('Lantern Inc', '64 Tower Rd, Belgrade, Montana')  p2=0.994 assigned_to=self
+          p2=0.99 p1=0.25 p1_q_gap=0.25 n_tset=100.00 hn_rel=8.00 hn_logdiff=5.69 num_jacc=0.00 num_q_only=1.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=0.26 q_addr_empty=0.00 q_native=0.00  extra='' miss=''
+  S1 S1-367303463 ('Sunrise Construction Pvt Ltd', 'Flat No-102 1St Floor Bl-F, Ratna Life Style, Bhubaneswar, Khordha, Orissa')   loss 1.00
+     FALSE S3-245829779 ('sunriseconstructions.com', 'Khordha, H.no 332 Plot No-263/4029, ଓଡ଼ିଶା, Bhubaneswar')  p2=0.865 assigned_to=self
+          p2=0.86 p1=0.97 p1_q_gap=0.96 n_tset=65.00 hn_rel=0.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=3.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=0.25 q_addr_empty=0.00 q_native=0.00  extra='' miss='sunrise L:ltd L:pvt'
+  S1 S1-187640774 ('Maid Tavern', '419 Varnumville Road, Brooksville, ME')   loss 1.00
+     FALSE S3-21982578 ('Maid Tavern [Inc]', '')  p2=0.995 assigned_to=self
+          p2=1.00 p1=1.00 p1_q_gap=1.00 n_tset=100.00 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=1.00 legal_conflict=0.00 lex_extra_min=0.45 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=0.16 q_addr_empty=1.00 q_native=0.00  extra='L:inc' miss=''
+  S1 S1-523009913 ('Peak Engineering Corporation', 'New Castle, Unit APT 105, 419 Ninth Street, DE')   loss 1.00
+     FALSE S2-717355503 ('Peak Engineering  Corp Corporation', 'DE, NEW CASTLE, 420 NINTH ST')  p2=0.879 assigned_to=self
+          p2=0.88 p1=0.33 p1_q_gap=0.33 n_tset=100.00 hn_rel=6.00 hn_logdiff=0.69 num_jacc=0.00 num_q_only=1.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=0.00 q_addr_empty=0.00 q_native=0.00  extra='' miss=''
+  S1 S1-3477781 ('Intech Vidyalaya', 'Muttathil Lane, Kadavanthra P. O., Ernakulam, Kerala, Ernakulam, Devaki Sadan')   loss 1.00
+     FALSE S2-506622959 ('nvidyalaya.com', 'FLOOR, ERNAKULAM, Kerala')  p2=0.757 assigned_to=self
+          p2=0.76 p1=0.21 p1_q_gap=0.21 n_tset=76.92 hn_rel=0.00 hn_logdiff=-1.00 num_jacc=-1.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=0.98 q_addr_empty=0.00 q_native=0.00  extra='' miss='intech'
+
+===== fp_distractor: 85 cases, 6 examples
+  S1 S1-349589666 ('Sanvi & Partners', 'C/O Chaitanya Padhy, Devinagar 3Rd Lane, Chhatrapur, Ganjam, Orissa')   loss 0.21
+     FALSE S3-115466827 ('Sanvi & Partners Limited', 'No 14 C/o Chaitanya Padhy, Devinagar 3Rd Lane, Chhatrapur, Ganjam, ଓଡ଼ିଶା')  p2=0.809 assigned_to=self
+          p2=0.81 p1=0.86 p1_q_gap=0.86 n_tset=100.00 hn_rel=0.00 hn_logdiff=-1.00 num_jacc=0.50 num_q_only=1.00 legal_q_only=1.00 legal_conflict=0.00 lex_extra_min=-0.20 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=0.94 q_addr_empty=0.00 q_native=0.00  extra='L:ltd' miss=''
+     (true, ok) S2-423403880 ('Sanvi & Partners [Corp]', 'C/O CHAITANYA PADHY, DEVINAGAR 3RD/9 LANE, CHHATRAPUR, Orissa')  p2=1.0
+     (true, ok) S3-557134581 ('SANVI & PARTNERS', 'Door No 773 C/o Chaitanya Padhy, Devinagar 3Rd Lane, Chhatrapur, Ganjam, Orissa')  p2=1.0
+     (true, ok) S3-708535594 ('Sanvi &', 'H.no 773 C/o Chaitanya Padhy, Devinagar 3Rd Lane, Chhatrapur, Ganjam, Orissa')  p2=1.0
+  S1 S1-123568690 ('Frontier Foundation', '302 1/2 18th Street, Farmington, NM')   loss 0.33
+     FALSE S3-968027290 ('Frontier Foundation Inc', '302 1/4 18th St, Farmington, New Mexico')  p2=0.853 assigned_to=self
+          p2=0.85 p1=0.98 p1_q_gap=0.98 n_tset=100.00 hn_rel=3.00 hn_logdiff=0.00 num_jacc=0.50 num_q_only=2.00 legal_q_only=1.00 legal_conflict=0.00 lex_extra_min=0.45 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=0.00 q_native=0.00  extra='L:inc' miss=''
+     (true, ok) S2-28000597 ('Frontier-Foundation', '')  p2=0.349
+     (true, ok) S3-363125485 ('Frontier Foundation', '#30483 18th St, Farmington, New Mexico')  p2=0.994
+     (true, ok) S3-412996561 ('Evotavoio fka Frontier Foundation', '302 1/2 18th Street, Farmington, NM')  p2=1.0
+  S1 S1-201444260 ('Metropolitan Fund', '60 Carriage House Road, Boothbay, ME')   loss 0.44
+     FALSE S2-598121692 ('Metropolitan Fbnnnd', '')  p2=0.79 assigned_to=self
+          p2=0.79 p1=0.19 p1_q_gap=-0.25 n_tset=88.89 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='fbnnnd' miss='fund'
+     (true, ok) S3-121959320 ('Metropolitan Fund', '##60 Carriage House Rd, Boothbay, Maine')  p2=1.0
+  S1 S1-353074270 ('Kay Brothers Ltd', 'Power Alfa, Door No. 2/327, Malabar Traders Building, Kayanna Bazar, Near Masj, Perambra, Kozhikode, Kerala')   loss 0.44
+     FALSE S3-630747371 ('Kay &  Brothers', '')  p2=0.999 assigned_to=self
+          p2=1.00 p1=0.99 p1_q_gap=0.99 n_tset=100.00 hn_rel=0.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=0.98 q_addr_empty=1.00 q_native=0.00  extra='' miss='L:ltd'
+     (true, ok) S3-374609936 ('Kay  Bochtls Ltd', 'Power Alfa, Door No. 2/327, Malabar Traders Building, Kayanna Bazar, Near Masj, Perambra, Kozhikode, കേരളം')  p2=1.0
+  S1 S1-405065645 ('Yadav (india) Ltd', '1St Floor, Kaliyattil Arcade Mukkelath Road, Opp. Coronation Theater, Kozhikode, Kerala')   loss 0.29
+     FALSE S2-415345129 ('YADAV  INDIA LTD', 'H.NO 10ST FLOOR, KALIYATTL ARCADE MUKKELATH ROAD, OPP. CORONATION THEATER, KOZHIKODE, Kerala')  p2=0.999 assigned_to=self
+          p2=1.00 p1=0.75 p1_q_gap=0.75 n_tset=100.00 hn_rel=0.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=1.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=0.00 q_native=0.00  extra='' miss=''
+     (true, ok) S2-473926656 ('yadavindia.com', '1ST FLOOR, KALIYATTIL ARCADE MUKKELATH ROAD, OPP. COFONATION THEATER, KOZHIKODE, Kerala')  p2=1.0
+     (true, ok) S3-387606475 ('Yadavindia.Com', '1St Floor, Kaliyattil Arcade Mukkelath Road, Opp. Coronation Theater, Calicut, Kozhikode, കേരളം')  p2=1.0
+  S1 S1-936093582 ('Gutierres, Castellon and Silva Clinic', '702 1/2 7th Street, Billings, MT')   loss 0.14
+     FALSE S2-548702759 ('gutierres, castellon and silva clinic llc', '702 1/7. 7TH STREET, BILLINGS, MT')  p2=0.938 assigned_to=self
+          p2=0.94 p1=0.99 p1_q_gap=0.99 n_tset=100.00 hn_rel=3.00 hn_logdiff=0.00 num_jacc=0.67 num_q_only=1.00 legal_q_only=1.00 legal_conflict=0.00 lex_extra_min=0.05 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=0.00 q_native=0.00  extra='L:llc' miss=''
+     (true, ok) S2-315120822 ('GUTIERRES, CASTELLON AND SILVA CLINIC [LTD]', 'BILLINGS, 702 1/2 SEVENTH STREET, MT')  p2=1.0
+     (true, ok) S2-447529499 ('GUTIERRES, CASTELLON AND SILVA CLINIC', '702 1/2 7ST SAINT, BILLINGS, MT')  p2=1.0
+     (true, ok) S2-772768313 ('Gutierres, Castellon And Silva Clinic', '702 1/2 7ST SAINT, BILLINGS, MT')  p2=1.0
+
+===== fp_belongs_to_other_s1: 44 cases, 6 examples
+  S1 S1-500966015 ('Alpha Galaxy Tech Private Limited', 'B 32/83 Janta Colonynear Basti Jodhewal Chowk Ludhiana, Punjab, Ludhiana, Punjab')   loss 0.17
+     FALSE S2-210222900 ('Pyraxylotavo', 'B 32/83 JANTA COLONYNEAR BASTI JODHEWAL CHOWK LUDHIANA, LUDHIANA, Punjab')  p2=0.903 assigned_to=self
+          p2=0.90 p1=0.58 p1_q_gap=0.47 n_tset=34.48 hn_rel=0.00 hn_logdiff=-1.00 num_jacc=1.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=0.00 q_native=0.00  extra='pyraxylotavo' miss='alpha galaxy tech L:ltd L:pvt'
+     (true, ok) S2-271190777 ('ਅਲਫ਼ਾ ਗਲੈਕਸੀ ਟੈਕ ਪ੍ਰਾਈਵੇਟ ਲਿਮਟਿਡ', 'PUNJAB, B 32/83 JANTA COLONYNEAR BASTI JODHEWAL CHOWK LUDHIANA, LUDHIANA')  p2=1.0
+     (true, ok) S2-286693368 ('Alpha Galaxy Tech Private Ltd', 'B 32/83 JANTA COLONYNEAR BASTI JODHEWAL CHOWK LUDHIANA, PUNJAB, ਪੰਜਾਬ')  p2=1.0
+     (true, ok) S2-482743775 ('Private Alpha Galaxy Tech Limited', 'B 32/83 JANTA COLONYNEAR BASTI JODHEWAL CHOWK LUDHIANA, PUNJAB, LUDHIANA, Punjab')  p2=1.0
+  S1 S1-863047853 ('Consuelo Humphrey Regional Better LLC', '943 Santa Clara Place, Los Alamos, NM')   loss 0.17
+     FALSE S3-557399510 ('Gildveo', 'New Mexico, 943 Santa Clara Pl, Los Alamos')  p2=0.921 assigned_to=self
+          p2=0.92 p1=0.91 p1_q_gap=0.50 n_tset=15.00 hn_rel=3.00 hn_logdiff=0.00 num_jacc=1.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=0.00 q_native=0.00  extra='gildveo' miss='better consuelo humphrey regional L:llc'
+     (true, ok) S2-108298219 ('The Consuelo Humphrey Regional Better LLC', '00943 SANTA CLARA PLACE, NM, LOS ALAMOS')  p2=1.0
+     (true, ok) S2-536301361 ('HMMPEHEY, CONSUELO REGIONAL BETTER LLC', 'SANTA CLARA PL, LOS ALAMOS, NM')  p2=0.999
+     (true, ok) S3-134057441 ('Consuelo Humphrey Regional Better L.L.C.', '943 Santa Clara Place, New Mexico, Los Alamos')  p2=1.0
+  S1 S1-772782794 ('My Properties Private Limited', 'Bldg. No. Vi/697B Of Pampady Panchayat Thottasserry Buildings, Pampady P.O, Kottayam, Ernakulam, Kerala')   loss 0.52
+     FALSE S3-900766938 ('My Properties', 'Ernakulam, H.no 962, കേരളം')  p2=0.834 assigned_to=self
+          p2=0.83 p1=0.08 p1_q_gap=0.07 n_tset=100.00 hn_rel=0.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=1.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.43 anc_p1=1.00 q_addr_empty=0.00 q_native=0.00  extra='' miss='L:ltd L:pvt'
+     (true, ok) S2-758707357 ('മൈ പ്രോപ്പർട്ടീസ് പ്രൈവറ്റ് ലിമിറ്റഡ്', 'BLDG. NO. VI/697B OF PAMPADY PANCHAYAT THOTTASSERRY BUILDINGS, PAMPADY P.O, KOTTAYAM, ERNAKULAM, കേരളം')  p2=1.0
+     (true, ok) S3-208762555 ('Dr My Próperties Private Limited', 'Bldg. No. Vi/697b Of Pampady Panchayat Thottasserry Buildings, Kottayam, Ernakulam, KL')  p2=1.0
+     (true, ok) S3-335910172 ('Gildxylo', 'Bldg. No. Vi/697b Of Pampady Panchayat Thottasserry Buildings, Pampady P.o, Kottayam, Ernakulam, KL')  p2=0.999
+  S1 S1-356598274 ('Shree (India) Trading Private Limited', 'Pallichambail, Welfare Road, Palarivattom (P.O), South Janatha Road, Ernakulam, Kerala')   loss 0.21
+     FALSE S2-721921990 ('Shree (India) Trading', '')  p2=0.978 assigned_to=self
+          p2=0.98 p1=0.92 p1_q_gap=0.92 n_tset=100.00 hn_rel=0.00 hn_logdiff=-1.00 num_jacc=-1.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='' miss='L:ltd L:pvt'
+     (true, ok) S2-249234277 ('private shree (india) trading limited', 'PALLICHAMBAIL, WELFARE ROAD, PALARIVATTOM (P.O), SOUTH JANATHA ROAD, ERNAKULAM, Kerala')  p2=1.0
+     (true, ok) S3-504339270 ('Shree (India)  Trading Private-Limited', 'Ernakulam, Pallichambail, കേരളം')  p2=1.0
+     (true, ok) S3-694713355 ('Smt Shree (India) Trading Private (Límited)', 'Ernakulam, Pallichambail, Ernakulam, Welfare Road, Palarivattom (P.O), South Janatha Road, KL')  p2=1.0
+  S1 S1-915875345 ('World Services (India)', 'Mohali, Punjab, Sec-60, Teh. Mohali, Mohali, 532')   loss 0.17
+     FALSE S3-980050560 ('M/s World Co LLP Services', '')  p2=0.894 assigned_to=self
+          p2=0.89 p1=0.99 p1_q_gap=0.98 n_tset=100.00 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=2.00 legal_conflict=0.00 lex_extra_min=-0.77 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='L:co L:llp' miss='india'
+     (true, ok) S2-401041125 ('WORLD SERVICES (INDIA) LTD', '00532, SEC-60, TEH. MOHALI, MOHALI, Punjab')  p2=1.0
+     (true, ok) S2-428513446 ('World  Services (India)', '00532, SEC-60, TEH. MOHALI, MOHALI, Punjab')  p2=1.0
+     (true, ok) S2-973727880 ('M/s World Services-(India)', '00532, SEC-60, TEH. MOHALI, MOHALI, Punjab')  p2=1.0
+  S1 S1-310409888 ("Kitti's Jewelers Partners", '2033 Hawthorne Drive, Dover, DE')   loss 0.12
+     FALSE S3-835717288 ("Kitti's Partners", '')  p2=0.817 assigned_to=self
+          p2=0.82 p1=0.38 p1_q_gap=0.37 n_tset=100.00 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='' miss='jewelers'
+     (true, ok) S2-277737790 ("Kitti's Jewelers Center", '2033 HAWTHORNE DR, PMB 6746, DOVER BASE HOUSING, DE')  p2=1.0
+     (true, ok) S2-679520154 ("Kitti's Jewlers  Partners", '2033 HAWTHORNE DR, DOVER, DE')  p2=0.999
+     (true, ok) S2-768219240 ("Kitti's Jewelers", '2033 HAWTHORNE DRIVE, DOVER BASE HOUSING, DE')  p2=1.0
+
+===== fn_below_threshold: 1055 cases, 6 examples
+  S1 S1-105571917 ('Bhubaneswar Social Pvt. Ltd.', 'Plot No. 1887/7775, Su-Sou Nivas, Kissan Nagar Infront Of Saptasati Temple, Rasulgarh, Bhubaneswar, Khordha, Orissa')   loss 0.09
+     TRUE  S2-63517310 ('Bhubaneswar Pvt. Ltd. Services', 'NO 6-1887/7775 , SU-SOU NIVAS, KISSAN NAGAR INFRONT OF SAPTASATI TEMPLE, RASULGARH, BHUBANESWAR, Orissa')  p2=0.601 assigned_to=None
+          p2=0.60 p1=0.47 p1_q_gap=0.47 n_tset=75.86 hn_rel=0.00 hn_logdiff=-1.00 num_jacc=0.67 num_q_only=1.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=2.08 ex_mod_max=0.49 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=0.00 q_native=0.00  extra='services' miss='social'
+     (true, ok) S3-261052940 ('Sollyrapyra', '#1887/7775, Su-sou Nivas, Kissan Nagar Infront Of Saptasati Temple, Rasulgarh, Khordha, Bhubaneswar, OD')  p2=1.0
+     (true, ok) S3-277343721 ('Bhubaneswar Social Pvt. Ltd.', 'No 1887/7775, Bhubaneswar, Khordha, OD')  p2=1.0
+     (true, ok) S3-322764590 ('Bhubaneswar Social Pvt. Pvt. Ltd', '')  p2=0.56
+  S1 S1-417999755 ('United Initiative', '1983 Nye Road, Nye, MT')   loss 0.09
+     TRUE  S3-286631344 ('United Initiative Enterprises', '')  p2=0.337 assigned_to=None
+          p2=0.34 p1=0.48 p1_q_gap=-0.03 n_tset=100.00 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=-2.32 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='enterprises' miss=''
+     (true, ok) S2-305512467 ('United Initiative', '1983 NYE RD, NYE, MT')  p2=1.0
+     (true, ok) S3-436479922 ('United Initisative', '1983 Nye Road, Nye, Montana')  p2=0.999
+  S1 S1-615954467 ('Lucas Group', '10421 Princess Jeanne Avenue, Albuquerque, NM')   loss 0.03
+     TRUE  S3-988098997 ('Leeahs Leeahs Group', 'Princess Jeanne Ave, Albuquerque, New Mexico')  p2=0.506 assigned_to=None
+          p2=0.51 p1=0.90 p1_q_gap=0.89 n_tset=78.26 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=0.00 q_native=0.00  extra='leeahs' miss='lucas'
+     (true, ok) S2-103548280 ('Lucas Group', '10421- PRINCESS JEANNE AVENUE, ALBUQUERQUE, NM')  p2=1.0
+     (true, ok) S2-579873026 ('Lucis Group', '10421- PRINCESS JEANNE AVE, ALBUQUERQUE, NM')  p2=0.971
+     (true, ok) S2-838211211 ('Lucas Group Center', '10421- PRINCESS JEANNE AVE, ALBUQUERQUE, NM')  p2=1.0
+  S1 S1-513290961 ('Cagle Midwest Therapeutics Inc', '11510 Gristmill Lane, Bridgeville, DE')   loss 0.09
+     TRUE  S3-347495693 ('Avimira', '#11510 Gristmill Lane, Bridgeville, Delaware')  p2=0.488 assigned_to=None
+          p2=0.49 p1=0.48 p1_q_gap=-0.16 n_tset=30.30 hn_rel=3.00 hn_logdiff=0.00 num_jacc=1.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=0.00 q_native=0.00  extra='avimira' miss='cagle midwest therapeutics L:inc'
+     (true, ok) S3-498322365 ('Cagle Inc Therapeutics Midwest', '#11510 Gristmill Ln, Bridgeville, Delaware')  p2=1.0
+     (true, ok) S3-568240081 ('Cagle Midwest', '')  p2=0.997
+  S1 S1-263901193 ('Great Trading Pvt. Ltd.', '4Th Floor, Unit 402, Tower B, World Trade Center, Infopark Phase-1, Sez Campus, Kanayannur, Ernakulam, Kerala')   loss 0.12
+     TRUE  S3-420009221 ('Nylaquo', '4Th Floor, Unit 402, Tower B, World Trade Center, Infopark Phase-1, Sez Campus, Kanayannur, Ernakulam, Kerala')  p2=0.08 assigned_to=None
+          p2=0.08 p1=0.14 p1_q_gap=-0.33 n_tset=10.00 hn_rel=0.00 hn_logdiff=-1.00 num_jacc=1.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=0.00 q_native=0.00  extra='nylaquo' miss='great trading L:ltd L:pvt'
+     (true, ok) S2-210361951 ('Shri GREAT TRADING  PVT. LTD.', '4TH FLOOR, UNIT 402, TOWER B, WORLD TRADE CENTER, INFOPARK PHASE-1, SEZ CAMPUS, KANAYANNUR, Kerala')  p2=1.0
+     (true, ok) S2-723486259 ('Dr GREAT TRADING PVT.-LTD.', '')  p2=0.398
+     (true, ok) S3-308418919 ('Great-Tcrfdimdgn Pvt. Ltd.', 'No 4Th Floor, Unit 402, Tower B, World Trade Center, Infopark Phase-1, Sez Campus, Kanayannur, Ernakulam, KL')  p2=1.0
+  S1 S1-345745900 ('Temple Lutheran Church', '158 Franklin Street, Bucksport, ME')   loss 0.17
+     TRUE  S2-576604768 ('TEMPLE LUTHERAN CHURCH', '')  p2=0.343 assigned_to=None
+          p2=0.34 p1=0.32 p1_q_gap=0.04 n_tset=100.00 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='' miss=''
+     (true, ok) S3-649260143 ('Temple Lutheran', '158 Franklin Saint, Bucksport, Maine')  p2=1.0
+
+===== fn_assigned_elsewhere: 2 cases, 6 examples
+  S1 S1-268317178 ('Smith Resources', '1108 D Fox Street, Carlsbad, NM')   loss 0.09
+     TRUE  S3-177365809 ('Smith Resources Inc', '')  p2=0.494 assigned_to=S1-79025811
+          p2=0.49 p1=0.32 p1_q_gap=0.02 n_tset=100.00 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=1.00 legal_conflict=0.00 lex_extra_min=0.45 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='L:inc' miss=''
+     (true, ok) S2-474021079 ('smith resources', 'Fox St, CARLSBAD, NM')  p2=1.0
+     (true, ok) S3-696071705 ('Smith Resources', '1108 D Fox Street, Carlsbad, New Mexico')  p2=1.0
+  S1 S1-838530521 ('Taylor Equity Partners LLC', 'Unit Lot 129, Westbrook, 665 Saco Street, ME')   loss 0.12
+     TRUE  S2-148959817 ('TAYLOR EQUITY', '')  p2=0.247 assigned_to=S1-257946434
+          p2=0.25 p1=0.24 p1_q_gap=0.03 n_tset=100.00 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='' miss='partners L:llc'
+     (true, ok) S2-263888972 ('Taylor Equity Partners Llc', '665A SACO ST, ME, WESTBROOK')  p2=1.0
+     (true, ok) S2-562841748 ('Nexdovagild', '665A SACO STREET, WESTBROOK, ME')  p2=-1.0
+     (true, ok) S3-156471712 ('Taylor Equity-Partners LLC', '##665 Saco St, # Lot 129, Westbrook, Maine')  p2=1.0
+
+===== fn_stage1: 34 cases, 6 examples
+  S1 S1-145626807 ('Black Tech Private Limited', 'Gfx21, 69/1854-A1, Srm Road, Near Nirmala Shishubhavan, Ernakulam, Kerala')   loss 0.12
+     TRUE  S3-687029467 ('ബ്ലാക്ക് ടെക് പ്രൈവറ്റ് ലിമിറ്റഡ്', 'Gfx7-21, Kochi Region, KL')  p2=None assigned_to=None
+     (true, ok) S2-799353239 ('ബ്ലാക്ക് ടെക് പ്രൈവറ്റ് ലിമിറ്റഡ്', 'BLOCK F-B3/836 GFX21, 69/1854-A1, SRM ROAD, NEAR NIRMALA SHISHUBHAVAN, ERNAKULAM, AYYAPPANKAVU, Kerala')  p2=1.0
+     (true, ok) S2-92590617 ('Black Tech Private Ltd', 'BLOCK F-B3/836 GFX21, 69/1854-A1, SRM ROAD, NEAR NIRMALA SHISHUBHAVAN, ERNAKULAM, Kerala')  p2=1.0
+     (true, ok) S2-983534273 ('ബ്ലാക്ക് ടെക് പ്രൈവറ്റ് ലിമിറ്റഡ്', 'BLOCK F-B3/836 GFX21, 69/1854-A1, SRM ROAD, NEAR NIRMALA SHISHUBHAVAN, ERNAKULAM, AYYAPPANKAVU, കേരളം')  p2=1.0
+  S1 S1-838530521 ('Taylor Equity Partners LLC', 'Unit Lot 129, Westbrook, 665 Saco Street, ME')   loss 0.12
+     TRUE  S2-562841748 ('Nexdovagild', '665A SACO STREET, WESTBROOK, ME')  p2=None assigned_to=None
+     (true, ok) S2-148959817 ('TAYLOR EQUITY', '')  p2=0.247
+     (true, ok) S2-263888972 ('Taylor Equity Partners Llc', '665A SACO ST, ME, WESTBROOK')  p2=1.0
+     (true, ok) S3-156471712 ('Taylor Equity-Partners LLC', '##665 Saco St, # Lot 129, Westbrook, Maine')  p2=1.0
+  S1 S1-9375243 ('Leather Complex Jalandhar Events Private Limited', '9, Leather Complex Jalandhar, Punjab')   loss 0.05
+     TRUE  S3-46692387 ('Leather Complex Events Private Limited Service', '8, Punjab, PB')  p2=None assigned_to=None
+     (true, ok) S2-92697932 ('Leather Complex Jalandhar Events (ID: 93123)', '9, LEATHER COMPLEX JALANDHAR, Punjab')  p2=1.0
+     (true, ok) S3-238430432 ('Leather Complex Jalandhar Évents Private Limited', '8, Leather Complex Jalandhar, PB, Punjab')  p2=0.999
+     (true, ok) S3-298659536 ('Leather Complex Jalandhar Events Private Ltd', '8, Punjab, Leather Complex Jalandhar, PB')  p2=0.999
+  S1 S1-612020263 ('Sarasesh Trading Corp', '561/82, Sector 82, Mohali, Punjab')   loss 0.09
+     TRUE  S3-538099336 ('Sarasesh Trading  Corp', '61/82, Mohali, PB')  p2=None assigned_to=None
+     (true, ok) S2-555123092 ('sarasesh trading corp', '561/82, SECTOR 82, MOHALI, ਪੰਜਾਬ')  p2=1.0
+     (true, ok) S3-433946970 ('5arasesh Trading Córp', '61/82, Sector 82, Mohali, ਪੰਜਾਬ')  p2=0.832
+  S1 S1-874728733 ('Aditin Media Public Limited', 'Punjab, 202 Nirmal Chhaya Towers Vip Road, B-3, Zirakpur, Mohali')   loss 0.12
+     TRUE  S3-166517409 ('Aditin Media Limited Services', 'No 288. B-3, Patiala, PB')  p2=None assigned_to=None
+     (true, ok) S2-849337436 ('Aditin Media-Public Limited', 'Punjab, B-3, 202 NIRMAL CHHAYA TOWERS VIP RAOD, ZIRAKPUR')  p2=1.0
+     (true, ok) S2-903851017 ('Aditin Limited  Public Media', 'B-3, 202 NIRMAL CHHAYA TOWERS VIP ROAD, ZIRAKPUR, ਪੰਜਾਬ')  p2=1.0
+     (true, ok) S3-177651270 ('Aditin Media', '')  p2=0.849
+  S1 S1-497608129 ('Shree Power Private Limited', '1/4996 N1 2Nd Floor, Kamala Building, East Nadakkavu, Kozhikode, Kerala')   loss 0.06
+     TRUE  S3-536930246 ('Shree Private Limited Center', 'N1 2Nd Floor, Calicut Region, KL')  p2=None assigned_to=None
+     (true, ok) S2-514978544 ('Shree Private Limited Services', 'DOOR NO 1/4996- N1 2ND FLOOR, KAMALA BUILDING, EAST NADAKKAVU, Kerala')  p2=0.921
+     (true, ok) S2-985923459 ('ശ്രീ പവർ പ്രൈവറ്റ് ലിമിറ്റഡ്', 'N1 2ND FLOOR, CALICUT, Kerala')  p2=0.995
+     (true, ok) S3-656549616 ('Shree Power', '1/4996 N1 2Nd Floor, Kamala Building, East Nadakkavu, Kozhikode, Kerala')  p2=1.0
+
+===== fn_blocking: 504 cases, 6 examples
+  S1 S1-774983262 ('Bombay Enterprises Limited', 'Ix/148, Thattarumattil House, A C Bazaar, Mooniyoor P O, Ullanam Road, Tirurangadi, Malappuram, Malapuram, Kerala')   loss 0.09
+     TRUE  S2-784233306 ('Bombay Enterprises  Limited', '')  p2=None assigned_to=None
+     (true, ok) S2-303256987 ('ബോംബെ എന്റർപ്രൈസസ് ലിമിറ്റഡ്', 'MALAPURAM, കേരളം, IX/B3/148, CALICUT REGION')  p2=1.0
+     (true, ok) S2-597767118 ('BOMBAY [ENTERPRISES]', '')  p2=-1.0
+     (true, ok) S2-910573188 ('Bombay Enterprises', 'IX/B3/148, THATTARUMATTIL HOUSE, A C BAZAAR, MOONIYOOR P O, ULLANAM ROAD, TIRURANGADI, MALAPPURAM, Kerala')  p2=1.0
+  S1 S1-515249619 ('Om Producer Pvt Ltd', 'Bathinda, Backside Brijsons Jewellers, Bathinda, Punjab, Kachery Bazzar H.No.154, Ground Floor, Rampura Phul')   loss 0.06
+     TRUE  S2-410337343 ('Dr Om Produtr Pvt Ltd', '')  p2=None assigned_to=None
+     (true, ok) S2-461630475 ('Om Pogrudcr Pvt Ltd', 'NO 466 BACKSIDE BRIJSONS JEWELLERS, KACHERY BAZZAR H.NO.154, GROUND FLOOR, RAMPURA PHUL, BATHINDA, Punjab')  p2=0.997
+     (true, ok) S3-205165942 ('Novitavo', 'Door No 878 Backside Brijsons Jewellers, Kachery Bazzar H.no.154, Ground Floor, Rampura Phul, Bathinda, PB')  p2=0.985
+     (true, ok) S3-632043136 ('M/s Lumbelo', 'No 878 Backside Brijsons Jewellers, Kachery Bazzar H.no.154, Ground Floor, Rampura Phul, Bathinda, PB')  p2=0.989
+  S1 S1-846185446 ('Anchor LLC', '117 3rd Street, Anaconda-deer Lodge, MT')   loss 0.06
+     TRUE  S2-9085298 ('Anchor LLC & Co', '')  p2=None assigned_to=None
+     (true, ok) S2-107010776 ('Anlmor LLC', '117 3RD STREET, ANACONDA-DEER LODGE, MT')  p2=1.0
+     (true, ok) S3-436219629 ('[LLC] Anchor', 'Montana, 117 3rd St, Anaconda-Deer Lodge')  p2=1.0
+     (true, ok) S3-609945511 ('anchor.com', 'Montana, Anaconda, 117 Third Street')  p2=1.0
+  S1 S1-864940899 ('On Brothers Private Limited', 'Na, Bhubaneswar, Puri, Orissa')   loss 0.06
+     TRUE  S3-956059243 ('On Private Limited Services', 'Na, Bhubaneswar, Puri, OD')  p2=None assigned_to=None
+     (true, ok) S2-505172627 ('On  Brothers Private Limited', 'NA, BHUBANESWAR, Odisha')  p2=0.999
+     (true, ok) S2-954306904 ('On Brothers Private Ltd', 'NA, BHUBANESWAR, Odisha')  p2=1.0
+     (true, ok) S3-346464296 ('On Brothers Private', 'Na, Bhubaneswar, Puri, OD')  p2=1.0
+  S1 S1-467375933 ('Oncology Care Associates Inc', 'MT, 116 Travois, Missoula')   loss 0.05
+     TRUE  S2-28086589 ('XYLOZEPH', '116 TRAOIS, MISSOULA, MT')  p2=None assigned_to=None
+     (true, ok) S2-544810672 ('Oncology Associates Inc Service', '116 TRAVOIS, MISSOULA, MT')  p2=1.0
+     (true, ok) S3-144541717 ('Oncology Care Associates  Inc', '116 Travois, Missouula, Montana')  p2=1.0
+     (true, ok) S3-739491628 ('-- Oncology Care [Associates]', '116 Travois, Missouula, Montana')  p2=1.0
+  S1 S1-958676936 ('Shyam Estate Pvt Ltd', 'Plot No 156, Disposal Road Amloh Road, Mandi Gobindgarh, Fatehgarh Sahib, Punjab')   loss 0.05
+     TRUE  S3-531311834 ('Shyam Pvt Ltd Center', '#156, <NULL>, PB')  p2=None assigned_to=None
+     (true, ok) S2-248098927 ('ਸ਼ਿਆਮ ਇਸਟੇਟ ਪ੍ਰਾ. ਲਿ.', 'H.NO 156, DISPOSAL ROAD AMLOH ROAD, MANDI GOBINDGARH, CHANDIGARH, Punjab')  p2=1.0
+     (true, ok) S2-482212223 ('ਸ਼ਿਆਮ ਇਸਟੇਟ ਪ੍ਰਾ. ਲਿ.', 'PLOT NO 156, DISPOSAL ROAD AMLOH ROAD, FATEHGARH SAHIB, CHANDIGARH, Punjab')  p2=1.0
+     (true, ok) S2-944564557 ('Shri SHYAM ESTATE PVT LTD', 'DOOR NO 156 , DISPOSAL ROAD AMLOH ROAD, MANDI GOBINDGARH, ਪੰਜਾਬ')  p2=1.0

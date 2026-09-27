@@ -1,0 +1,129 @@
+[    10s] train source 1 kept 116791 of 2206821
+[    35s] train source 2 kept 257674 of 5034616
+[    62s] train source 3 kept 270830 of 5285603
+[    88s] translit entries (from slice pairs) 603
+[   183s]   blocking India: 3 states, 282932 queries, 0 without state
+[   193s]   blocking US: 6 states, 245572 queries, 0 without state
+[   213s] TRAIN slice records per S1 by country: {'India': 4.542, 'US': 4.505}
+[   326s] TRAIN matched per S1: {'India': 3.329, 'US': 3.294} unmatched per S1: {'India': 1.214, 'US': 1.212}
+[   326s] TRAIN India matched: n=207341  best-name-cos histogram:   [0.0, 0.2):0.000   [0.2, 0.4):0.015   [0.4, 0.6):0.044   [0.6, 0.7):0.048   [0.7, 0.8):0.063   [0.8, 0.9):0.064  [0.9, 0.95):0.018 [0.95, 1.01):0.748
+[   326s] TRAIN India matched: share with a near-identical S1 name (cos>=0.8) 0.830; of those, S1 house number equal 0.166; addr cos>=0.6 0.881
+[   326s] TRAIN India matched: share with NO similar S1 (name cos<0.4 and addr cos<0.4): 0.0002
+[   326s] TRAIN India unmatched: n=75591  best-name-cos histogram:   [0.0, 0.2):0.000   [0.2, 0.4):0.007   [0.4, 0.6):0.086   [0.6, 0.7):0.139   [0.7, 0.8):0.218   [0.8, 0.9):0.298  [0.9, 0.95):0.056 [0.95, 1.01):0.197
+[   326s] TRAIN India unmatched: share with a near-identical S1 name (cos>=0.8) 0.550; of those, S1 house number equal 0.109; addr cos>=0.6 0.666
+[   326s] TRAIN India unmatched: share with NO similar S1 (name cos<0.4 and addr cos<0.4): 0.0011
+[   326s] TRAIN India: top-1 (name+addr) is the true S1 for 0.9924 of matched records
+[   326s] TRAIN US matched: n=179532  best-name-cos histogram:   [0.0, 0.2):0.001   [0.2, 0.4):0.017   [0.4, 0.6):0.045   [0.6, 0.7):0.057   [0.7, 0.8):0.090   [0.8, 0.9):0.097  [0.9, 0.95):0.029 [0.95, 1.01):0.664
+[   326s] TRAIN US matched: share with a near-identical S1 name (cos>=0.8) 0.790; of those, S1 house number equal 0.830; addr cos>=0.6 0.891
+[   326s] TRAIN US matched: share with NO similar S1 (name cos<0.4 and addr cos<0.4): 0.0001
+[   326s] TRAIN US unmatched: n=66040  best-name-cos histogram:   [0.0, 0.2):0.000   [0.2, 0.4):0.021   [0.4, 0.6):0.137   [0.6, 0.7):0.107   [0.7, 0.8):0.125   [0.8, 0.9):0.226  [0.9, 0.95):0.123 [0.95, 1.01):0.260
+[   326s] TRAIN US unmatched: share with a near-identical S1 name (cos>=0.8) 0.609; of those, S1 house number equal 0.018; addr cos>=0.6 0.258
+[   326s] TRAIN US unmatched: share with NO similar S1 (name cos<0.4 and addr cos<0.4): 0.0046
+[   326s] TRAIN US: top-1 (name+addr) is the true S1 for 0.9965 of matched records
+[   333s] test source 1 kept 156985 of 1732544
+[   356s] test source 2 kept 360340 of 4887273
+[   378s] test source 3 kept 378011 of 5082316
+[   444s]   blocking France: 1 states, 261096 queries, 0 without state
+[   457s]   blocking India: 3 states, 324118 queries, 0 without state
+[   463s]   blocking US: 6 states, 153137 queries, 0 without state
+[   466s] TEST slice records per S1 by country: {'France': 3.59, 'India': 5.695, 'US': 5.601}
+[   466s] TEST France all: n=261096  best-name-cos histogram:   [0.0, 0.2):0.016   [0.2, 0.4):0.009   [0.4, 0.6):0.043   [0.6, 0.7):0.049   [0.7, 0.8):0.119   [0.8, 0.9):0.101  [0.9, 0.95):0.024 [0.95, 1.01):0.640
+[   466s] TEST France all: share with a near-identical S1 name (cos>=0.8) 0.765; of those, S1 house number equal 0.587; addr cos>=0.6 0.767
+[   466s] TEST France all: share with NO similar S1 (name cos<0.4 and addr cos<0.4): 0.0001
+[   466s] TEST India all: n=324118  best-name-cos histogram:   [0.0, 0.2):0.000   [0.2, 0.4):0.011   [0.4, 0.6):0.060   [0.6, 0.7):0.087   [0.7, 0.8):0.126   [0.8, 0.9):0.163  [0.9, 0.95):0.033 [0.95, 1.01):0.519
+[   466s] TEST India all: share with a near-identical S1 name (cos>=0.8) 0.715; of those, S1 house number equal 0.148; addr cos>=0.6 0.817
+[   466s] TEST India all: share with NO similar S1 (name cos<0.4 and addr cos<0.4): 0.0005
+[   466s] TEST US all: n=153137  best-name-cos histogram:   [0.0, 0.2):0.001   [0.2, 0.4):0.021   [0.4, 0.6):0.080   [0.6, 0.7):0.073   [0.7, 0.8):0.102   [0.8, 0.9):0.154  [0.9, 0.95):0.070 [0.95, 1.01):0.499
+[   466s] TEST US all: share with a near-identical S1 name (cos>=0.8) 0.723; of those, S1 house number equal 0.544; addr cos>=0.6 0.696
+[   466s] TEST US all: share with NO similar S1 (name cos<0.4 and addr cos<0.4): 0.0027
+[   466s] India bins [strong&hn_eq, strong&hn_diff, mid, weak]: train-matched [0.138 0.692 0.154 0.015] train-unmatched [0.06  0.491 0.443 0.007] TEST [0.106 0.609 0.273 0.011]
+[   467s] US bins [strong&hn_eq, strong&hn_diff, mid, weak]: train-matched [0.655 0.134 0.192 0.018] train-unmatched [0.011 0.598 0.37  0.021] TEST [0.393 0.329 0.255 0.022]
+
+===== TEST SIBLING-LIKE (name cos>=0.8, S1 house number differs): 330500 records
+  Q  ('Grace-Hospitality Pvt', 'ROOM NO.108, FIRST FLOOR NIPPON KERALA CENTRE, ACADEMIC ZONE KINFRA-HI-TECH PARK, KALAM, ASERRY, KOCHI, Keralam')
+  S1 ('Grace Hospitality Pvt Ltd', 'Room No.108, First Floor Nippon Kerala Centre, Academic Zone Kinfra-Hi-Tech Park, Kalam, Aserry, Kochi, Ernakulam, Kerala')   name_cos 1.00 addr_cos 1.00
+
+  Q  ('Shivam Life Infra [Private]', 'C/o Zacharias Thomas, Kottayam, KL')
+  S1 ('Shivam Life Infra Private Limited', 'C/O Zacharias Thomas, Lakaparampil Veroor Thengana, Kottayam, Kerala')   name_cos 1.00 addr_cos 0.60
+
+  Q  ('Corner Cleaning Sérvíce! LLC', 'Pine Heath Rd, Bar Harbor, Maine')
+  S1 ('Corner Cleaning Service! LLC', 'Bar Harbor, 44 Pine Heath Road, ME')   name_cos 1.00 addr_cos 0.77
+
+  Q  ('Varshana Institute Ltd', '369, GONIANA ROAD, HOMELAND ENCLAVE, BATHINDA, Punjab')
+  S1 ('Varshan Institute Limited', '348, Goniana Road, Homeland Enclave, Bathinda, Punjab')   name_cos 0.94 addr_cos 0.55
+
+  Q  ('Hari Star Power Private Ltd', 'H.no D/66/1037west Poonkulam Vellayani P O, Trivandrum, KL')
+  S1 ('Hari Star Power Private Limited', 'Door No 66/1037West Poonkulam Vellayani P O, Trivandrum, Kerala')   name_cos 1.00 addr_cos 1.00
+
+  Q  ('BQU Club SARL', 'Rue De La Gilarderie, Nantes, Pays de la Loire')
+  S1 ('BQU Club SARL', '114 Rue de la Gilarderie, Nantes, Pays de la Loire')   name_cos 1.00 addr_cos 0.54
+
+  Q  ('Dophtalmologie Amis Holding SA', 'Pornic, Loire-Atlantique, 31 Bis Rue Pmul Paulet')
+  S1 ('Dophtalmologie Amis SA', '20 bis Rue Paul Paulet, Pornic, Pays de la Loire')   name_cos 0.84 addr_cos 0.48
+
+  Q  ('Rajasthan & Sóns Private Limited', 'C/O BABA TULSI DASS STEEL ROLLING MILLS ROLLING VILLAGE, MUGAL MAJRA, MANDIGOBINDGARH, Punjab')
+  S1 ('Rajasthan & Sons Private Limited', 'C/O Baba Tulsi Dass Steel Rolling Mills Rolling Village, Mugal Majra, Mandigobindgarh, Fatehgarh Sahib, Punjab')   name_cos 1.00 addr_cos 0.97
+
+  Q  ('വൈറ്റ് ഹോസ്പിറ്റാലിറ്റി പ്രൈവറ്റ് ലിമിറ്റഡ്', 'D-3D, ERNAKULAM, കേരളം')
+  S1 ('White Hospitality Private Limited', 'Ernakulam, Chakolas Habitat, Thevara Ferry Road, Thevara, Ernakulam, Ernakulam, D-3D, Kerala')   name_cos 1.00 addr_cos 0.39
+
+  Q  ('Urban Pvt. Ltd. Services Services', 'AP XI/A-144 CHANDIROOR P.O, ALAPPUZHA, Kerala')
+  S1 ('Urban Marketing Pvt. Ltd.', 'Ap Xi/144 Chandiroor P.O, Alappuzha, Kerala')   name_cos 0.40 addr_cos 1.00
+
+  Q  ('ବାବା କନସଲଟାଣ୍ଟସ୍ ଏଲ୍\u200cଏଲ୍\u200cପି', 'PLOT NO-00559, AT/PO- TATO KHATA NO-81/64, MAYURBHANJ, Orissa')
+  S1 ('Baba Consultants LLP', 'Plot No-559, Mayurbhanj, Orissa, Mayurbhanj, At/Po- Tato Khata No-81/64')   name_cos 1.00 addr_cos 0.98
+
+  Q  ('Spanco Ventures Pvt. (ID: 97394)', 'WARD NO. ##5, RAIRANGPUR, Odisha')
+  S1 ('Spanco Ventures Pvt. Ltd.', 'Ward No. 5, Rairangpur, Mayurbhanj, Orissa')   name_cos 1.00 addr_cos 0.89
+
+  Q  ('Pvt. Kannur Ventures Ltd.', 'Building No.ep I /00487, Chathanmala Pottanplav Po, Eruvessy, Kannur, NULL, KL')
+  S1 ('Kannur Ventures Pvt. Ltd.', 'Building No.Ep I /487, Chathanmala Pottanplav Po, Eruvessy, Kannur, Kerala')   name_cos 1.00 addr_cos 1.00
+
+  Q  ('ਸ਼ਿਆਮ ਬਿਲਡਰਜ਼ ਪ੍ਰਾ. ਲਿ.', 'No 7, Ludhiana, ਪੰਜਾਬ')
+  S1 ('Shyam Builders Pvt Ltd', 'Plot No 7, Raja Vanaspati Oswal Complex Near Goyal Huyndai, Gt Road, Jugiana, Ludhiana, Punjab')   name_cos 1.00 addr_cos 0.22
+
+
+===== TEST ORPHAN-LIKE (no similar S1): 589 records
+  Q  ('Hines Tungsten Llc', '026 86TH AVE, HALLIDAY, ND')
+  S1 ('Jester Trust', '46 1st Street, Halliday, ND')   name_cos 0.06 addr_cos 0.34
+
+  Q  ('Sibeal Ramirez Reliable Harbor West Corp', '73 ABERDEEN ST, GLASGOW, MT')
+  S1 ('Reliable First Ares Inc', '423 24th Street, Billings, MT')   name_cos 0.40 addr_cos 0.00
+
+  Q  ('PALERMOWANNERMARCOTTE.COM', '508-512 MAIN STREET, MCVILLE, ND')
+  S1 ('Mckinney, Pine & Rowan Clinic', '512 3rd Street, Fargo, ND')   name_cos 0.21 addr_cos 0.33
+
+  Q  ('Total Twelve Ltd', '8592 St Vrain Way, Missoula, Montana')
+  S1 ('Total Interiors L.L.C.', 'MT, 478 Sullivan Avenue, Square Butte')   name_cos 0.35 addr_cos 0.00
+
+  Q  ('Prime Grand Hall LLC', '57 JARVIS STREET, WINDSOR, VT')
+  S1 ('Hall & Patel', 'VT, Hartford, 694 Hartford Avenue')   name_cos 0.39 addr_cos 0.00
+
+  Q  ("Granger's Silver Design Lewiston Riverside LP", '44 Maple Street, # APT 7, Lewistn, Maine')
+  S1 ('#8 Design', '88 Samoset Road, Boothbay Harbor, ME')   name_cos 0.40 addr_cos 0.00
+
+  Q  ('Palermo, Wanner and Marcotte Partners Corp', '515  MAIN STREET, MCVILLE, ND')
+  S1 ('Carmon, Escovar & Abdirahman Tge Inc', '2404 112th Avenue, Mcville, ND')   name_cos 0.06 addr_cos 0.33
+
+  Q  ('Rizaavikor', '39685 Sea Del Dr, Bethany Beach, Delaware')
+  S1 ('West Mellon', '34915 Sea Waye Lane, DE, Millsboro')   name_cos 0.00 addr_cos 0.38
+
+  Q  ("Reyna's-Towing Northside", '10 Spring Street, NULL, York, Maine')
+  S1 ('Northern Dental Associates Group', '10 Parlin Road, York, ME')   name_cos 0.19 addr_cos 0.37
+
+  Q  ('The Lea Grattan Safety', '86 MEADOW WOODS RAD, ELMORE, VT')
+  S1 ('Lee Factory', '86 College Street, Montpelier, VT')   name_cos 0.06 addr_cos 0.29
+
+  Q  ('Penn, Miller and LLC Amaral', '30 CHERUB LAKE RD, TROY, MT')
+  S1 ('Lantern, LLC', '4725 Lake Creek Road, Troy, MT')   name_cos 0.00 addr_cos 0.40
+
+  Q  ('Lassiter & Slocum Partners Corporation', '117 DAVIS AVE, SHELBURNE, VT')
+  S1 ('Complete Hospitality Partners LLC', '117 Pleasant Street, Enosburgh, VT')   name_cos 0.19 addr_cos 0.27
+
+  Q  ('Arcveralyra', 'HN 4-9 A 26/1, CALICUT REGION, KOZHIKODE, Kerala')
+  S1 ('Maruti Delights (India) Private Limited', 'Elathur E P 26 Calicut, Calicut, Kozhikode, Kerala')   name_cos 0.00 addr_cos 0.38
+
+  Q  ("Reyna's Totwing Inc", '10  SPRING ST, YORK, ME')
+  S1 ('Northern Dental Associates Group', '10 Parlin Road, York, ME')   name_cos 0.00 addr_cos 0.37
+
+[   471s] done

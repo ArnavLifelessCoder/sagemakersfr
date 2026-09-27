@@ -1,0 +1,45 @@
+[    59s] parsed 116791 546278
+[   100s] baseline k10 keep5 nostate10                     recall 0.99427  missed  2317  cand/query 8.94
+[   102s]    missed with empty address: 1404
+[   165s] k20 keep10 nostate40                             recall 0.99670  missed  1334  cand/query 18.50
+[   235s] k20 keep5 nostate40                              recall 0.99430  missed  2305  cand/query 8.94
+[   244s] number-key channel alone: 19885587 pairs (36.40/query)
+[   291s] number-key channel alone                         recall 0.70550  missed 119035  cand/query 36.40
+[   353s] baseline + number-key                            recall 0.99524  missed  1925  cand/query 43.38
+[   406s] k20 keep5 nostate40 + number-key                 recall 0.99527  missed  1913  cand/query 43.38
+
+still missed (k20 + number-key), non-empty address, examples:
+  S1 ('Sree Tollways Pvt Ltd', 'Room No. V/482, 1St Floor, Pournami Plaza, Thaikkad Po, Thrissur, Kerala')
+   Q ('Sree Tilwsy Pvt Ltd', 'Room No. V/782, Thrissur, KL, Thrissur')
+  S1 ('Thiruvananthapuram International LLP', 'Ground Floor, Plot No.2, Carnival Technopark, Technopark Campus, Thiruvananthapuram, Thiruvananthapuram, Trivandrum, Kerala')
+   Q ('Thiruvananthapuram LLP Services', 'Ground Floor, Thiruvananthapuram, KL')
+  S1 ('Integrated Energetics LLC', '3 Wabanaki Trail, New Gloucester, ME')
+   Q ('Integrated LLC Services', '3- WABANAKI TRL, NEW GLOUCESTER, ME')
+  S1 ('Jai Investments Pvt Ltd', 'Kannur, Koottunkal Complex, Buildingno.Np.I.567/C, D, E, Taliparamba, Kerala')
+   Q ('ജയ് ഇൻവെസ്റ്റ്മെന്റ്സ് പ്രൈവറ്റ് ലിമിറ്റഡ്', 'TALIPARAMBA, KOTTUNKAL COMPLEX, KANNUR, Keralam')
+  S1 ('Ernakulam Engineering Private Limited', 'Soorya Enclave, Opp Kendriya Vidyalaya, Kerala, 7-B, Ernakulam')
+   Q ('Brixkelodrex', '7-B, Ernakulam, KL')
+  S1 ('Seo Fuels LLC', '3709 7th Avenue, Great Falls, MT')
+   Q ('Se0 LLC Sérvice', '5709 7TH AVE, GREAT FALLS, MT')
+  S1 ('Rev It Up Nails', '7 Center Street, New Castle, DE')
+   Q ('Rev It Up', '7 CENTLR STREET, NEW CATLE, DE')
+  S1 ('Global Solutions Corp', 'Door No. 38 C, Thuruthukara Road, Kizhakkambalam, Aluva, Ernakulam, Kerala')
+   Q ('M/s Global Corp Services', 'C, Pattimattom, KL')
+  S1 ('Universal Constructions Private Limited', 'Ground Floor, Thuruthiyil Building Near Chuvannamannu Post Office, P O Chuv, Annamannu, Thrissur, Kerala')
+   Q ('Universal Constructions Private', 'Ground Floor, Thrissur, കേരളം')
+  S1 ('Rodriguez Investments LLC', '457 Bay Avenue, Milford, DE')
+   Q ('Rodriguez Ihnhvecsmtetnms LLC', 'BAY AVE, MLIFORD, DE')
+  S1 ('Classic Foundation Limited', 'Hno 14, Mnwa, Sastha Nagar, Akathethara Po, Palakkad, Kerala')
+   Q ('Classic  Limited Center', 'Hno 14, Palakkad, KL')
+  S1 ('Jai Products Private Limited', 'Khordha, Bhubaneswar, Orissa, Plot No. 292, Ogalapada, Janala, Near Jatni Gate')
+   Q ('SOLDOVAVANTAGE', 'PLCT NO. 29, KHORDHA, BHUBANESWAR, ଓଡ଼ିଶା')
+
+missed with empty address at k20/nostate40: 1390
+  S1 KO Eduserv Ltd   Q KO  Ltd Partners
+  S1 Cure Nails   Q Cure Neadbl
+  S1 High Technology Private Limited   Q High Technology Private Enterprises
+  S1 Urgent Care Partners   Q Urgent Care (Partners)
+  S1 Kochi Intelligence Private Limited   Q Kochi Private Limited Service
+  S1 Vision Enterprises Limited   Q Vision Enterprises Límited #68256
+  S1 Ara Finance Ltd   Q Ara Ltd Center
+  S1 Western Vulcan   Q WESTERN-SERVICES

@@ -12,3 +12,12 @@ artifacts/
 output/
 __pycache__/
 *.pyc
+data/
+runs/
+v5/
+v6/
+submissions/
+dump_*/
+*.log
+*.out.bak
+solution/**/__pycache__/

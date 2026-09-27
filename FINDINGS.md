@@ -402,3 +402,50 @@ cd code/business_entity_resolution
 python -m src.make_dev_subset --zip PATH/6ab10eb3b23ba_student_resource.zip --out ../../dev
 python -m src.pipeline train --dev ../../dev --work ../../art_dev      # ~11 min on 12 threads
 ```
+
+
+---
+
+## 8. Independent audit, 2026-09-26 (Claude): what the small dev slice hid
+
+Full details and the plan in `PLAN.md`; scripts in `experiments/` (`eda_shift.py`, `loss_decomp.py`,
+`decide.py`, `block_recall.py`).
+
+**8.1 The test set is the same generator plus 1.9x the distractors.** For matching states, every S2/S3 record
+was binned by best-S1 name cosine and house-number agreement; test bins are a mixture of the labelled training
+bins with weight 0.59 on true records in both the US and India (every bin fits). So test = 3.3 true records
+per S1 (the training prior) + 2.3 distractors per S1 (train: 1.21), same distractor distribution; orphans
+(no similar S1 at all) are 0.05-0.3%. The empty-address rate dilutes exactly as this predicts.
+
+**8.2 Empty address is a 15x prior.** 4.5% of true records have an empty address, 0.3% of distractors. They are
+also 46% of the blocking misses at scale (country-wide name-only search) and a source of cross-S1 confusion.
+
+**8.3 Scale, not features, is the main gap.** The 9-state dev slice gives blocking recall 0.994 and F0.5 0.992;
+the stratified 30% slice with Delhi, Uttar Pradesh, Texas and Ohio gives blocking recall **0.981** and
+validation F0.5 **0.986** for the same v4 code. On that slice 52% of the loss is blocking misses (Delhi alone
+is 44% of them), 19% true records below threshold, 16% records attached to the wrong same-name / same-address
+S1, 8% distractor false merges, 4% singletons given a match.
+
+**8.4 France.** 35% of France S2/S3 addresses end with the city and no region ("17 RUE YVES BODIGUEL, NANTES");
+the US and India are 100% recognised. A city -> region map learned from the France S1 addresses (label-free)
+backfills them. Without it these records were searched country-wide with an unknown state-agreement feature.
+
+**8.5 India identifiers.** The leading-integer house number agrees on 17% of true India pairs (83% US) because
+identifiers are composite ("4-1-10/1/2", "Plot No-176", "H.no 332"). The number-set features already catch most
+sibling sub-number edits on dev (distractors score ~0), so composite identifier features add precision rather
+than fix a hole: sibling = one sub-number edited plus a modifier word; true record = the same identifier plus
+an added labelled number ("Hn 402"), typos, script changes.
+
+**8.6 Decisions.** A per-S1 expected-F0.5 rule (keep the prefix of a record set that maximises the expected
+score, empty prediction included, 2% allowance for unfound records) beats the best fixed threshold by 0.0001 to
+0.0006 on dev and is what v5 uses; shrinking the odds by the 1.9x density hurt on the emulated metric, so
+probabilities are left raw and only the per-country shape calibration acts. Negative weighting 1.9 in
+training gave nothing on top of the rule.
+
+**8.7 Blocking.** Keeping the top-10 per channel (was 5) lifts dev recall 0.9943 -> 0.9968 at 18.5 candidates
+per record; a (state, number) exact-key channel costs 35 candidates per record for +0.001 and was dropped;
+a third channel on the concatenated name+address vectors adds +0.0005 on small states for 3% more candidates.
+
+**8.8 Environment.** 18-core Snapdragon laptop: Windows x64 Python (emulated) trains LightGBM 2.5-5x faster than
+native ARM builds; running three pipeline jobs at once slows each 10x (Pool(18) x 3 plus OpenMP), so keep to two
+jobs with `--workers`/`--threads` set to share the cores.

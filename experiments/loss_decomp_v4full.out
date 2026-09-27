@@ -1,0 +1,196 @@
+validation entities 135052  macro F0.5 0.98621  total loss 0.01379  threshold 0.5
+category                          loss   share   count
+fn_blocking                    0.00711   51.6%    8802
+fn_below_threshold             0.00265   19.2%    3624
+fp_belongs_to_other_s1         0.00177   12.9%    1059
+fp_distractor                  0.00114    8.3%     726
+singleton_given_match          0.00056    4.0%      75
+fn_assigned_elsewhere          0.00043    3.1%     557
+fn_stage1                      0.00013    1.0%     180
+
+===== singleton_given_match: 75 cases, 5 examples
+  S1 S1-189823884 ('Ear Nose & Throat Metro Group', '18221 Upper Brook Street, Conroe, TX')   loss 1.00
+     FALSE S3-495004331 ('Ear Nose & Throat Metro Group Corp', 'Conroe, Texas, 1822 Upper Brook Street')  p2=0.589 assigned_to=self
+          p2=0.59 p1=0.93 p1_q_gap=0.93 n_tset=100.00 hn_rel=5.00 hn_logdiff=9.71 num_jacc=0.00 num_q_only=1.00 legal_q_only=1.00 legal_conflict=0.00 lex_extra_min=0.41 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=0.34 q_addr_empty=0.00 q_native=0.00  extra='L:corp' miss=''
+  S1 S1-512102837 ('Lantern Inc.', '360 Tower Road, Belgrade, MT')   loss 1.00
+     FALSE S3-647416758 ('Lantern Inc', '64 Tower Rd, Belgrade, Montana')  p2=0.988 assigned_to=self
+          p2=0.99 p1=0.26 p1_q_gap=0.26 n_tset=100.00 hn_rel=8.00 hn_logdiff=5.69 num_jacc=0.00 num_q_only=1.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=0.25 q_addr_empty=0.00 q_native=0.00  extra='' miss=''
+  S1 S1-581778245 ('Neilla A. Hall, DMD, M.D., P.C.', '812 Memory Lane, Mckinney, TX')   loss 1.00
+     FALSE S2-711629135 ('Neilla A. Hall, DMCD, M.D., P.C.', '812 MEMORY LN, MCKINNY, TX')  p2=0.985 assigned_to=self
+          p2=0.98 p1=0.99 p1_q_gap=0.99 n_tset=97.56 hn_rel=3.00 hn_logdiff=0.00 num_jacc=1.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=0.00 q_addr_empty=0.00 q_native=0.00  extra='' miss=''
+  S1 S1-178925337 ('FRL Overseas Private Limited', 'G-1905, 19 Floor Antriksh, Golf View 1, Noida Sec-78, Noida, Gautam Buddha Nagar, Uttar Pradesh')   loss 1.00
+     FALSE S3-873065605 ('FERL Overseas Private Limited', 'G, Noida, Gautam Buddha Nagar, UP')  p2=0.621 assigned_to=self
+          p2=0.62 p1=0.67 p1_q_gap=0.67 n_tset=96.00 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=0.00 q_addr_empty=0.00 q_native=0.00  extra='' miss=''
+  S1 S1-324099540 ('South Highland Ford L.L.C.', '212 Wilson Road, Hankamer, TX')   loss 1.00
+     FALSE S2-465564925 ('South Highland Ford LLC', '214 WILSNO RD, HANKAMER, TX')  p2=0.831 assigned_to=self
+          p2=0.83 p1=0.15 p1_q_gap=0.15 n_tset=100.00 hn_rel=6.00 hn_logdiff=1.10 num_jacc=0.00 num_q_only=1.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.02 anc_p1=0.56 q_addr_empty=0.00 q_native=0.00  extra='' miss=''
+
+===== fp_distractor: 726 cases, 5 examples
+  S1 S1-278064991 ('New Delh Orbits', '14Th Floor, Antariksh Bhavan 22, Kasturba Gandhi Marg, New Delh, Central Delhi, Delhi')   loss 0.44
+     FALSE S2-632613770 ('newdelhimulti.com | www.newdelhimu.com', 'NO 14TH FLOOR, ANTARIKSH BHAVAN 22, KASTURBA GANDHI MARG, NEW DELHI, Delhi')  p2=0.957 assigned_to=self
+          p2=0.96 p1=0.94 p1_q_gap=0.94 n_tset=51.28 hn_rel=0.00 hn_logdiff=-1.00 num_jacc=1.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=0.99 q_addr_empty=0.00 q_native=0.00  extra='newdelhimu newdelhimulti' miss='delh new orbits'
+     (true, ok) S3-870399494 ('New Órbits Delh', 'Floor, DL')  p2=0.999
+  S1 S1-65709600 ('Solify Heritage LLC', '2193 Peace Avenue, Warren, OH')   loss 0.17
+     FALSE S2-155877233 ('Solufy  Heritage', 'OH, WARREN, 2193 PEACE AVE')  p2=0.508 assigned_to=self
+          p2=0.51 p1=0.96 p1_q_gap=0.96 n_tset=93.33 hn_rel=3.00 hn_logdiff=0.00 num_jacc=1.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=0.00 q_native=0.00  extra='' miss='L:llc'
+     (true, ok) S2-203852651 ('*** Solify Heritage Llc - 7109443667', 'WARREN, 2193 PEACE AVE, OH')  p2=1.0
+     (true, ok) S2-307924929 ('Solify Heritage (LLC)', '')  p2=0.996
+     (true, ok) S2-684503967 ('Solify Heritage', '482 PEACE AVENUE, PMB 6305, WARREN, OH')  p2=0.947
+  S1 S1-161229268 ('Reyes Capital Southwest PC', '2505 1/2 2nd Street, Austin, TX')   loss 0.14
+     FALSE S3-69783671 ('Reyes Capital Southwest  LLC', '2505 1/13 2nd St, Austn, Texas')  p2=0.727 assigned_to=self
+          p2=0.73 p1=0.94 p1_q_gap=0.94 n_tset=100.00 hn_rel=3.00 hn_logdiff=0.00 num_jacc=0.50 num_q_only=2.00 legal_q_only=1.00 legal_conflict=1.00 lex_extra_min=-0.07 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=0.00 q_native=0.00  extra='L:llc' miss='L:pc'
+     (true, ok) S2-16284782 ('The Reyes Capital Southwest PC', '2505 1/2- SECOND STREET, AUSTIN, TX')  p2=1.0
+     (true, ok) S2-28389178 ('Reyes Capital PC Center', '2505 1/2- 2nd Street, AUSTIN, TX')  p2=1.0
+     (true, ok) S2-528328043 ('reyescapitalsouthwestcom', '2505 1/2- SECOND STREET, AUSTIN, TX')  p2=1.0
+  S1 S1-486446244 ('Flori Saxe Platinum Corporate Inc', '1175 Calla Road, Unit A125, Youngstown, OH')   loss 0.29
+     FALSE S2-254159141 ('Flori Saxe Platinum Services Ínc', '1188 CALLA RD, YOUNGSTOWN, OH')  p2=0.656 assigned_to=self
+          p2=0.66 p1=0.17 p1_q_gap=0.17 n_tset=80.85 hn_rel=6.00 hn_logdiff=2.64 num_jacc=0.00 num_q_only=1.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=1.95 ex_mod_max=1.56 peer_num_share_p=0.00 anc_p1=0.99 q_addr_empty=0.00 q_native=0.00  extra='services' miss='corporate'
+     (true, ok) S2-494560139 ('Flori Flori Sáxe Platinum Corporate Inc', '1453 CALA RD, YOUNGSTOWN, OH')  p2=0.991
+     (true, ok) S3-707719216 ('Flori Saxe Platinum Corporate Inc', '1175b Calla Rd, Youngstown, Ohio')  p2=1.0
+  S1 S1-54468631 ('Russell Best Newbridge LLC', '30496 34, Russell, IA')   loss 0.21
+     FALSE S3-997345513 ('Abregorail.Com - 4422780843', 'Russell, 30496 34, Iowa')  p2=0.824 assigned_to=self
+          p2=0.82 p1=0.95 p1_q_gap=0.95 n_tset=31.25 hn_rel=3.00 hn_logdiff=0.00 num_jacc=1.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=0.00 q_native=0.00  extra='abregorail' miss='best newbridge russell L:llc'
+     (true, ok) S2-322198943 ('RUSSELL BEST NCEBRHlGE LLC', 'IA, RUSSELL, 30496 34')  p2=1.0
+     (true, ok) S3-523553304 ('... russell best newbridge llc', '30496 34, Russell, Iowa')  p2=1.0
+     (true, ok) S3-675906120 ('Russell  Best Newbridge LLC #45566', '30496 34, Russell, Iowa')  p2=1.0
+
+===== fp_belongs_to_other_s1: 1059 cases, 5 examples
+  S1 S1-316566624 ('Bebrisoft LLC', '2009 47th Street, Lincoln, NE')   loss 0.29
+     FALSE S3-458896428 ('Bebrisoft LLC', '')  p2=0.506 assigned_to=self
+          p2=0.51 p1=0.31 p1_q_gap=-0.01 n_tset=100.00 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='' miss=''
+     (true, ok) S2-23406407 ('BEBRISOFT-LLC', '002009 47ND ST, LINCOLN, NE')  p2=1.0
+     (true, ok) S3-880803532 ('LLC Bebrisoft', '2009 47th Street, NULL, Lincoln, Nebraska')  p2=1.0
+  S1 S1-95951785 ('Classic Wellness Enterprises LLC', '11030 Panther Court, TX, Houston')   loss 0.21
+     FALSE S3-670980929 ('Classic Wellness Enterprises', '')  p2=0.838 assigned_to=self
+          p2=0.84 p1=0.95 p1_q_gap=0.93 n_tset=100.00 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='' miss='L:llc'
+     (true, ok) S3-467484713 ('Classic Wellness', '011030 Panther Ct, Houston, Texas')  p2=1.0
+     (true, ok) S3-799996333 ('Classic Wellness Enterprises', '011030 Panther Ct, Houston, Texas')  p2=1.0
+     (true, ok) S3-924859821 ('classicwellnessenterprises.com', '011030 Panther Ct, Houston, Texas')  p2=1.0
+  S1 S1-940678100 ('Leo Brothers Private Limited', 'Delhi, New Delhi, First Floor Chhattarpur Enclave, Phase-Ii, B-50, South West Delhi')   loss 0.17
+     FALSE S3-256409275 ('Leo Brothers  Private Ltd', '')  p2=0.581 assigned_to=self
+          p2=0.58 p1=0.15 p1_q_gap=-0.15 n_tset=100.00 hn_rel=0.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='' miss=''
+     (true, ok) S2-206696809 ('PRIVATE LEO BROTHERS (LIMITED)', 'B-50, NEW DELHI, SOUTH WEST DELHI, दिल्ली')  p2=1.0
+     (true, ok) S2-50900125 ('Leo Private Limited Service', 'B-50, FIRST FLOOR CHHATTARPUR ENCLAVE, PHASE-II, NEW DELHI, Delhi')  p2=1.0
+     (true, ok) S3-855024248 ('Leo Brothers', '360 B-50, First Floor Chhattarpur Enclave, Phase-ii, New Delhi, South West Delhi, DL')  p2=1.0
+  S1 S1-583278469 ('Good Advisors (India) Pvt Ltd', '110 Deepali Building 92 Nehru Place, New Delhi, Delhi')   loss 0.17
+     FALSE S2-715312481 ('#SHIVTRADING', '11 DEEPALI BUILDING 92 NEHRU PLACE, NEW DELHI, दिल्ली')  p2=0.602 assigned_to=self
+          p2=0.60 p1=0.03 p1_q_gap=0.01 n_tset=33.33 hn_rel=5.00 hn_logdiff=4.61 num_jacc=0.33 num_q_only=1.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=1.39 anc_p1=1.00 q_addr_empty=0.00 q_native=0.00  extra='shivtrading' miss='advisors good india L:ltd L:pvt'
+     (true, ok) S2-670470594 ('Shri Good Advisors (India) Pvt (Ltd)', '11 DEEPALI BUILDING 92 NEHRU PLACE, NEW DELHI, दिल्ली')  p2=1.0
+     (true, ok) S3-105903146 ('Good Advisors (Ida) Pvt Ltd', '110 Deepali Building 92 Nehru Place, New Delhi, दिल्ली')  p2=1.0
+     (true, ok) S3-301346364 ('Umbraevo Formerly Good Advisors (India) Pvt Ltd', '110 Deepali Building 92 Nehru Place, New Delhi, Delhi')  p2=1.0
+  S1 S1-196896192 ('Perfect Media Limited', 'D - 680, C.R. Park, New Delhi, South Delhi, Delhi')   loss 0.44
+     FALSE S3-807286330 ('Mr Perfect Media Priivhlle Limited', 'Door No 680 A-18 Shop No. 1 Ground, Delhi, North Delhi, दिल्ली')  p2=0.827 assigned_to=self
+          p2=0.83 p1=0.33 p1_q_gap=0.33 n_tset=100.00 hn_rel=0.00 hn_logdiff=-1.00 num_jacc=0.33 num_q_only=2.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.92 anc_p1=0.92 q_addr_empty=0.00 q_native=0.00  extra='priivhlle' miss=''
+     (true, ok) S3-673243313 ('परफेक्ट मीडिया लिमिटेड', 'D - 680, Greater Noida, South Delhi, DL')  p2=0.998
+
+===== fn_below_threshold: 3624 cases, 5 examples
+  S1 S1-473653568 ('Nidyne LLC', '295 Wilco Highway, Unit 6304, Hutto, TX')   loss 0.04
+     TRUE  S3-560412581 ('Nidyne LLC', '')  p2=0.315 assigned_to=None
+          p2=0.31 p1=0.31 p1_q_gap=0.01 n_tset=100.00 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='' miss=''
+     (true, ok) S2-338767343 ('Nidyne Llc', '295-C Wilco Hwy, HUTTO, TX')  p2=1.0
+     (true, ok) S2-616151121 ('Nnigde LLC', 'HUTTO, TX, 295-C WILCO HIGHWAY')  p2=0.999
+     (true, ok) S2-965859193 ('NIDYNE LLC LLC', '295-C WILCO HWY, HUTTO, TX')  p2=1.0
+  S1 S1-231389420 ('Arts Alliance LLC', '411 Roosevelt Avenue, Unit Apartment B, Muscle Shoals, AL')   loss 0.12
+     TRUE  S2-967569783 ('ARTS ALLIANCE  LLC Enterprises', '')  p2=0.054 assigned_to=None
+          p2=0.05 p1=0.31 p1_q_gap=0.08 n_tset=100.00 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=-3.15 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='enterprises' miss=''
+     (true, ok) S2-197965426 ('artsalliance.com', '411-413 Roosevelt Avenue, MUSCLE SHOALS, AL')  p2=1.0
+     (true, ok) S2-50939276 ('ARTS ALSANEC LLC', '411-413 ROOSEVELT AVENUE, MUSCLE SHOALS, AL')  p2=1.0
+     (true, ok) S2-914624517 ('Arts Álliance LLC', '411-413 ROOSEVELT AVENUE, MUSCLE SHOALS, AL')  p2=1.0
+  S1 S1-464048092 ('Dynamic Enterprises LLP', 'C/O: Ravi Kumar, Suraj, Dayal, Kamla Market, Phulwari, Patna, Bihar')   loss 0.11
+     TRUE  S3-183720687 ('Dynamic Enterprises', '')  p2=0.112 assigned_to=None
+          p2=0.11 p1=0.07 p1_q_gap=-0.06 n_tset=100.00 hn_rel=0.00 hn_logdiff=-1.00 num_jacc=-1.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='' miss='L:llp'
+     (true, ok) S2-238417931 ('डायनामिक एंटरप्राइजेज एलएलपी', 'C/O: RAVI KUMAR, PHULWARI, KOTWALI SQUARE, Bihar')  p2=0.991
+     (true, ok) S2-287264092 ('डायनामिक एंटरप्राइजेज एलएलपी', 'KOTWALI SQUARE, SURAJ, DAYAL, KAMLA MARKET, Bihar, PHULWARI, C/O: RAVI KUMAR')  p2=1.0
+     (true, ok) S2-645096108 ('Dynamic Entepeaiges LLP LLP', '')  p2=-1.0
+  S1 S1-440368521 ('Euro Fruit Limited', 'C/O Naturals Dairy Private Limited Plot No Ns-11 Patliputra Industrial Area, Patna, Bihar')   loss 0.29
+     TRUE  S3-132929414 ('Onyxnyla', 'C/o Naturals Dairy Private Limited Plot No Ns-11 Patliputra Industrial Area, Patna, BR')  p2=0.202 assigned_to=None
+          p2=0.20 p1=0.37 p1_q_gap=-0.36 n_tset=11.11 hn_rel=0.00 hn_logdiff=-1.00 num_jacc=1.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=0.00 q_native=0.00  extra='onyxnyla' miss='euro fruit L:ltd'
+     (true, ok) S2-101216095 ('Euro Fruit', '')  p2=0.389
+     (true, ok) S2-66456819 ('eurofruit.com', '91 C/O NATURALS DAIRY PRIVATE LIMITED PLOT NO NS-11 PATLIPUTRA INDUSTRIAL AREA, PATNA, Bihar')  p2=1.0
+  S1 S1-288553675 ('Urban Hypnosis LLC', '2055 Palmer Drive, West Norriton Township, PA')   loss 0.05
+     TRUE  S3-349871179 ('Urban Hypnosis LLC Center', '')  p2=0.074 assigned_to=None
+          p2=0.07 p1=0.15 p1_q_gap=-0.10 n_tset=100.00 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=1.79 ex_mod_max=0.68 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='center' miss=''
+     (true, ok) S2-249257198 ('Urban-Hypnosis LLC', '2055 PALMER DR, NORRISTOWN, PA')  p2=1.0
+     (true, ok) S3-321160930 ('urbanhypnosis.com', '2055 Palmer Drive, West Norriton Township, Pennsylvania')  p2=1.0
+     (true, ok) S3-384334923 ('Urban Hypnosis', '2055 Palmer Dr, West Norriton Township, Pennsylvania')  p2=1.0
+
+===== fn_assigned_elsewhere: 557 cases, 5 examples
+  S1 S1-264040081 ('Midwest Futurecorp LLC', '19323 Wilderness Road, Unit LOT 307, Lee County, VA')   loss 0.06
+     TRUE  S2-246020797 ('Midwest Futurecorp LLC', '')  p2=0.563 assigned_to=S1-407992823
+          p2=0.56 p1=0.33 p1_q_gap=-0.05 n_tset=100.00 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='' miss=''
+     (true, ok) S2-447256080 ('Midwest Futurecorp L.L.C.', '19323 WILDERNESS RD, LEE COUNTY, VA')  p2=1.0
+     (true, ok) S2-82335239 ('Midwest  Futurecorp', '19323 WILDERNESS ROAD, ROSE HILL, VA')  p2=1.0
+     (true, ok) S3-807997348 ('midwestfuturecorp.com', '19323 Wildsrness Rd, # LOT 307, Lee County, Virginia')  p2=1.0
+  S1 S1-173091045 ('G+ Pono Group', '1787 Holburn Avenue, Columbus, OH')   loss 0.06
+     TRUE  S3-643723049 ('G+ Pono', '')  p2=0.091 assigned_to=S1-710065411
+          p2=0.09 p1=0.02 p1_q_gap=-0.79 n_tset=100.00 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='' miss='group'
+     (true, ok) S2-246117402 ('G+ Group Services', '1787 HOLBURN AVENUE, COLUMBUS, OH')  p2=1.0
+     (true, ok) S3-737986772 ('Piono G+ Group', '1787 Holburn Avenue, Columbus, Ohio')  p2=0.996
+     (true, ok) S3-827917103 ('G+ Group Pono', '1787 Holburn Ave, Columbus, Ohio')  p2=1.0
+  S1 S1-185258124 ('New Delhi Dealmark Pvt Ltd', 'E- 106 Preet Vihar, New Delhi, East Delhi, Delhi')   loss 0.05
+     TRUE  S2-945709649 ('New Delhi Dealmark Pvt Limited', '')  p2=0.513 assigned_to=S1-286649336
+          p2=0.51 p1=0.15 p1_q_gap=0.01 n_tset=100.00 hn_rel=0.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='' miss=''
+     (true, ok) S2-129016311 ('New Delhi Dealmark Pvt #40196', 'PLOT 00473 E- 106 PREET VIHAR, NEW DELHI, Delhi')  p2=1.0
+     (true, ok) S2-39788126 ('New De1hi Dealmark Pvt', 'PLOT 00473 E- 106 PREET VIHAR, NEW DELHI, Delhi')  p2=1.0
+     (true, ok) S3-523483348 ('New Delhi Dealmark', 'DL, East Delhi, New Delhi, E- 106 Preet Vihar')  p2=1.0
+  S1 S1-77722771 ('Clarion Trust', '131, Shankerwar Tola Mokama, Patna, Bihar')   loss 0.05
+     TRUE  S3-603453538 ('Clarion  Trust', '')  p2=0.523 assigned_to=S1-157922398
+          p2=0.52 p1=0.29 p1_q_gap=-0.01 n_tset=100.00 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=0.99 q_addr_empty=1.00 q_native=0.00  extra='' miss=''
+     (true, ok) S3-427890843 ('Clarion Partners', 'A-131, null, Patna, BR')  p2=1.0
+     (true, ok) S3-478819408 ('Clarion-Trust', 'BR, null, Patna, A-131')  p2=1.0
+     (true, ok) S3-629273355 ('Clarion  Trust', 'Patna, null, A-131, Patna, BR')  p2=1.0
+  S1 S1-730286469 ('Industrial Software Ventures LLC', 'TX, Amarillo, 1014 Dunaway Street')   loss 0.09
+     TRUE  S2-952350250 ('Industrial Software Software Ventures LLC', '')  p2=0.522 assigned_to=S1-25980598
+          p2=0.52 p1=0.10 p1_q_gap=-0.20 n_tset=100.00 hn_rel=1.00 hn_logdiff=-1.00 num_jacc=0.00 num_q_only=0.00 legal_q_only=0.00 legal_conflict=0.00 lex_extra_min=0.00 ex_mod_max=0.00 peer_num_share_p=0.00 anc_p1=1.00 q_addr_empty=1.00 q_native=0.00  extra='' miss=''
+     (true, ok) S2-698715677 ('Industrial  Software Ventures LLC', '')  p2=0.652
+     (true, ok) S3-779028652 ('industrialsoftwareventures.com', '01014 Dunaway Street, Amarillo, Texas')  p2=1.0
+
+===== fn_stage1: 180 cases, 5 examples
+  S1 S1-450542200 ('Wall Vance Associates', 'Dallas, 4657 Country Creek Drive, TX')   loss 0.09
+     TRUE  S2-261128392 ('Wall Vance', '')  p2=None assigned_to=None
+     (true, ok) S3-272012859 ('Wall Vance [Associates]', '4657 Country Creek Drive, N/A, Dallas, Texas')  p2=1.0
+     (true, ok) S3-971040672 ('Wall Associates Vance', '4657 Country Creek Drive, N/A, Dallas, Texas')  p2=1.0
+  S1 S1-496419660 ('Ear Nose & Throat Associates', '251 Mt Pisgah Road, Gladewater, TX')   loss 0.06
+     TRUE  S3-124474103 ('Ear Nose Throat  & Associates', '')  p2=None assigned_to=None
+     (true, ok) S2-978391001 ('EAR NOSE THROAT & ASSOCIATES', '251 MT PISGAH ROAD, GLADEWATER, TX')  p2=1.0
+     (true, ok) S3-196575357 ('Ear Nose + Throat Associates', '251-B Mt Pisgah Road, Gladewater, Texas')  p2=1.0
+     (true, ok) S3-348722113 ('Ear & Throat Associates Partners', '251-B Mt Pisgah Road, Gladewater, Texas')  p2=1.0
+  S1 S1-548148076 ('Foot & Ankle Care, Inc.', '18630 Triangle Street, Prince William County, VA')   loss 0.06
+     TRUE  S3-116680834 ('Foot & Ankle Care Inc. Enterprises', '')  p2=None assigned_to=None
+     (true, ok) S2-397950887 ('foot & ankle care, inc.', 'TRIANGLE STREET, PRINCE WILLIAM COUNTY, VA')  p2=1.0
+     (true, ok) S2-527997403 ('FOOT & ANKLE', '18630 TRIANGLE STREET, TRIANGLE, VA')  p2=1.0
+     (true, ok) S3-915872315 ('Foot + Ankle Care, Inc', 'Virginia, 18630 Triangle St, Triangle')  p2=1.0
+  S1 S1-237794913 ('FT Analytical Private Limited', 'Raipura, Fathuha Fatwa, Patna, Bihar')   loss 0.06
+     TRUE  S3-947493032 ('FT Private Limited Center', 'Ripura, N/A, Patna, BR')  p2=None assigned_to=None
+     (true, ok) S2-139678237 ('FT Analytical Private Ltd', 'RAIPURA, FATHUHA FATWA, PATNA, बिहार')  p2=1.0
+     (true, ok) S2-574191388 ('FT Analytical Private Limited', 'RAIPURA, FATHUHA FATWA, PATNA, Bihar')  p2=1.0
+     (true, ok) S2-88916728 ('Limited FT Private Center', 'RAIPRUA, PATNA, Bihar')  p2=-1.0
+  S1 S1-770298443 ('Al Consulting Private Limited', 'Gali No.2 Laxmi Nagar, West Guru Angad Nagar, East Delhi, A16, Delhi')   loss 1.00
+     TRUE  S2-186596356 ('अल Consulting Private Limited', 'A#16, EAST DELHI, Delhi')  p2=None assigned_to=None
+     (true, ok) S2-436175869 ('अल कंसल्टिंग प्राइवेट लिमिटेड', 'A#16, EAST DELHI, Delhi')  p2=-1.0
+
+===== fn_blocking: 8802 cases, 5 examples
+  S1 S1-554153928 ('Delhi Organic Pvt Ltd', 'Plot No. 521, Iind Floor Sector-19 Dwarka, Delhi, South West Delhi, Delhi')   loss 0.09
+     TRUE  S3-927697771 ('delhiorganic.com', 'Plot No. 521, Divreportingcircle, Delhi, DL')  p2=None assigned_to=None
+     (true, ok) S2-45208931 ('DELHI ORGANIC PVT LTD (ID: 52131)', 'PLOT NO. 5-21 , IIND FLOOR SECTOR-19 DWARKA, DELHI, दिल्ली')  p2=0.996
+     (true, ok) S3-937068997 ('Delhi Pvt Ltd Center', 'DL, Iind Floor Sector-19 Dwarka, Delhi, Divreportingcircle, 521')  p2=0.99
+  S1 S1-174812342 ('Prairie Charities', '130 Ridgeway Road, Cincinnati, OH')   loss 0.05
+     TRUE  S3-975777568 ('Prairie Charities Council', '')  p2=None assigned_to=None
+     (true, ok) S2-713356736 ('Prairie  Charities', '130 RIDGEWAY RD, CINCINNATI, OH')  p2=1.0
+     (true, ok) S3-201471912 ('Prairie  Charitie', '130-134 Ridgeway Road, Cincinnati, Ohio')  p2=0.997
+     (true, ok) S3-392976238 ('Prairie', '130 Ridgeway Road, Cincinnati, OH')  p2=1.0
+  S1 S1-510316885 ('Green Foods Pvt Ltd', 'C/O Ramesh Bhati, Natho Ka Baas, Jodhpur, Rajasthan')   loss 0.06
+     TRUE  S3-207986279 ('Green Foods  Pvt', '')  p2=None assigned_to=None
+     (true, ok) S2-411957289 ('ग्रीन फूड्स प्रा. लि.', 'H.NO 785 C/O RAMESH BHATI, JODHPUR, राजस्थान')  p2=0.995
+     (true, ok) S3-410474805 ('Greenfoods.Com', 'C/o Ramesh Bhati, Jodhpur, RJ')  p2=1.0
+     (true, ok) S3-430724875 ('ग्रीन फूड्स प्रा. लि.', 'C/o Ramesh Bhati, Natho Ka Baas, Jodhpur, RJ')  p2=1.0
+  S1 S1-69518330 ('Delhi Lubricants LLP', 'Ff, Flat No. 7, Kh No. 61 Ambedkar Colony, Village Chattarpur, South West Delhi, H. No. 9 B, Delhi')   loss 0.06
+     TRUE  S3-581677073 ('Delhi Lobrintns LLP', 'H. No. 5-9 B, South West Delhi, DL')  p2=None assigned_to=None
+     (true, ok) S2-397077599 ('Delhi Lubricants L.L.P.', 'H. NO. 9 B, FF, FLAT NO. 7, KH NO. 61 AMBEDKAR COLONY, VILLAGE CHATTARPUR, DELHI, null, Delhi')  p2=1.0
+     (true, ok) S3-319810861 ('Delhi Lúbricants LLP LLP', 'DL, H. No. 5-9 B, Delhi, South West Delhi')  p2=1.0
+     (true, ok) S3-596366380 ('Delhi Lubricants L.L.P.', '#5-9 B, South West Delhi, DL')  p2=1.0
+  S1 S1-708287934 ('Vision Physicians', '615 Mcalpin Avenue, Cincinnati, OH')   loss 0.06
+     TRUE  S3-40703514 ('Visi0n Physicians Enterprises', '')  p2=None assigned_to=None
+     (true, ok) S2-422228674 ('visionphysicians.com', '#615 MCALPIN AVE, CINCINNATI, OH')  p2=1.0
+     (true, ok) S2-494275663 ('Vision  Physicianns', 'OH, CINCINNATI, #615 MCALPIN AVENUE')  p2=1.0
+     (true, ok) S2-709432600 ('Vision Physícians', '#615 MCALPIN AVENUE, CINCINNATI, OH')  p2=1.0

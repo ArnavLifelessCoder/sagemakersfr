@@ -1,0 +1,23 @@
+validation entities 23384  macro F0.5 0.99225  total loss 0.00775  threshold 0.8
+category                          loss   share   count
+fn_below_threshold             0.00527   68.0%    1231
+fn_blocking                    0.00099   12.7%     289
+fp_distractor                  0.00068    8.8%      72
+singleton_given_match          0.00034    4.4%       8
+fp_belongs_to_other_s1         0.00029    3.7%      30
+fn_stage1                      0.00017    2.2%      40
+fn_assigned_elsewhere          0.00001    0.2%       5
+
+===== singleton_given_match: 8 cases, 0 examples
+
+===== fp_distractor: 72 cases, 0 examples
+
+===== fp_belongs_to_other_s1: 30 cases, 0 examples
+
+===== fn_below_threshold: 1231 cases, 0 examples
+
+===== fn_assigned_elsewhere: 5 cases, 0 examples
+
+===== fn_stage1: 40 cases, 0 examples
+
+===== fn_blocking: 289 cases, 0 examples
