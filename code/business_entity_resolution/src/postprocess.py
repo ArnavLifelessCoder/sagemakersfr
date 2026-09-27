@@ -44,6 +44,23 @@ def rescue_kind(sn, sa, qn, qa, c):
     return ""
 
 
+def _related(a, b):
+    return a == b or a.startswith(b) or b.startswith(a) or a.endswith(b) or b.endswith(a)
+
+
+def sibling_signature(srec, qrec):
+    """Same core name, house number changed (not a pad/prefix/truncation), legal form changed."""
+    sn, sa, c = srec
+    qn, qa, _ = qrec
+    if not sa or not qa:
+        return False
+    a, b = parse_name(sn), parse_name(qn)
+    if not a["core"] or sorted(a["core"]) != sorted(b["core"]) or set(a["legal"]) == set(b["legal"]):
+        return False
+    ha, hb = parse_address(sa, c)["hn"], parse_address(qa, c)["hn"]
+    return bool(ha) and bool(hb) and not _related(ha, hb)
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--scores", required=True)
@@ -51,6 +68,9 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--thr", nargs="+", default=["France=0.99", "India=0.9", "US=0.968"])
     ap.add_argument("--rescue-min", type=float, default=0.5)
+    ap.add_argument("--sibling-countries", nargs="*", default=["US"],
+                    help="countries where accepted 'same name + changed number + changed legal form' pairs are "
+                         "dropped (test sibling signature; 95%% fakes below p 0.96, ~44%% precision above)")
     a = ap.parse_args()
     thr = {k: float(v) for k, v in (x.split("=") for x in a.thr)}
     d = pd.read_parquet(a.scores)
@@ -58,7 +78,8 @@ def main():
     best["t"] = best.country.map(thr).fillna(0.75).values
     keep = best.p.values >= best.t.values
     band = best[(~keep) & (best.p.values >= a.rescue_min)]
-    need = set(band.s1) | set(band.q)
+    acc_sib = best[keep & best.country.isin(a.sibling_countries).values]
+    need = set(band.s1) | set(band.q) | set(acc_sib.s1) | set(acc_sib.q)
     rec = {}
     for k in (1, 2, 3):
         with open(os.path.join(a.test_dir, f"test_source{k}.tsv"), encoding="utf-8") as f:
@@ -71,7 +92,14 @@ def main():
     band = band.assign(kind=kinds)
     resc = band[band.kind != ""]
     print("rescued per country / kind:\n", resc.groupby(["country", "kind"]).size())
-    final = pd.concat([best[keep], resc])
+    drop = set()
+    for s1_, q_ in zip(acc_sib.s1, acc_sib.q):
+        if sibling_signature(rec[s1_], rec[q_]):
+            drop.add((s1_, q_))
+    kept = best[keep]
+    kept = kept[[(x, y) not in drop for x, y in zip(kept.s1, kept.q)]]
+    print("dropped sibling-signature pairs:", len(drop))
+    final = pd.concat([kept, resc])
     match = final.groupby("s1", sort=False).q.apply(list).to_dict()
     s1 = pd.read_csv(os.path.join(a.test_dir, "test_source1.tsv"), sep="\t", dtype=str, keep_default_na=False,
                      usecols=["entity_id", "country"], quoting=3)

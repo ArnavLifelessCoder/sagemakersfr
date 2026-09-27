@@ -328,6 +328,19 @@ per-S1 F0.5 loss split by cause (`err_decomp.py`):
 - Current estimate of the test loss split (from slice results and LB 0.971): France about 0.93 (largest
   remaining gap, no labels), India about 0.965 (Telangana fixed in v5), US about 0.99.
 
+**5.15 The test sibling signature, located (cell-density analysis)**
+- No leakage in the files: matched share is flat (0.733 +- 0.001) across row-position and entity-id deciles.
+- Per-S1 density of (probability band x house-number relation x same core name) among accepted-ish pairs,
+  test (v5 seed-102) vs a labelled train-like slice (`cell_preview.py`): India matches its reference in
+  every cell; US is inflated in ONE cell, "same name + changed house number" (p 0.5-0.99: 0.144/S1 vs
+  0.020, est. precision 0.125; p>=0.99: 0.076 vs 0.055). France cannot be judged against a US reference.
+- Splitting that US cell (`us_cell_split.py`): the excess is **same name + legal form added/changed + number
+  within +-20** (p 0.5-0.9: 0.078/S1 vs 0.002 true -> 2% precision). This is the test-only sibling type
+  ("Physical Therapy Care Ltd, 6245" for S1 "Physical Therapy Care, 6240").
+- v6's US threshold 0.96 had already removed most of it; the remainder at p>=0.96 with changed legal form is
+  ~0.034/S1 at ~44% precision -> `postprocess.sibling_signature` drops it (US only): ~+0.0025 US.
+- Transitive rescue (copy of an accepted record) was measured and rejected (-0.0011, 41% precision).
+
 ## 6. Running it on Kaggle
 - Upload the challenge zip and this code folder as two private Datasets. Run
   `code/business_entity_resolution/kaggle_run.ipynb`. Internet must be ON (pip installs rapidfuzz,
