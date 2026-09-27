@@ -400,7 +400,11 @@ def cmd_predict(a):
     log("loaded test", len(src), src.country.value_counts().to_dict())
     s1_order = src.entity_id.values[src.src.values == 1].copy()
     res = []
+    only = cfg.get("predict_countries")
     for country in sorted(src.country.unique()):
+        if only and country not in only:
+            log(country, "skipped (predict_countries =", only, ")")
+            continue
         part = src[src.country == country]
         tr_c = extend_translit(tr, part.business_name.values)
         log(country, f"translit: {len(tr)} learned + {len(tr_c) - len(tr)} phonetic fallbacks")

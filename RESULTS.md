@@ -130,10 +130,12 @@ siblings too (FINDINGS.md 5.7), so v2 is only a partial fix.
   - type B (rate 0.10 per S1): one core name word swapped for a common name word of the same country
 - Dev run (train slice): 21,247 synthetic records (0.18 per S1; US 11.8k, India 9.4k); blocking recall 0.994;
   validation including the synthetics F0.5 0.9900 plain, 0.9889 test-like, at threshold 0.75.
-- Kaggle: SEED 7, FORCE_TRAIN, train_frac 0.3, train + predict in one notebook (~4.5 h). Leaderboard: _pending_
+- Kaggle: SEED 7, FORCE_TRAIN, train_frac 0.3. Matches per S1: France 3.087, India 3.334, US 3.344.
+  Leaderboard (public): **0.977** (+0.001 over v7): the model rejects the synthetic siblings, but real test
+  siblings are mostly not of the generated kinds.
 
 ## v7 - raw seed 202 (v4 seed-2 model + wider blocking + OCR fold, model's own calibration)
-- Matches per S1: France 3.209, India 3.350, US 3.360. Leaderboard (public): **0.978** (best so far).
+- Matches per S1: France 3.209, India 3.350, US 3.360. Leaderboard (public): **0.976**.
 - Lesson: v6 (same model family, older blocking, blanket thresholds France 0.99 / US 0.96 / India 0.9) scored 0.974;
   the blocking/OCR change is worth ~+0.002 in-distribution, so the blanket thresholds likely COST ~0.002.
   France's 0.5-0.99 band holds true word-swap matches as well as siblings (FINDINGS 5.16). Trust the model's calibration.
@@ -148,4 +150,6 @@ siblings too (FINDINGS.md 5.7), so v2 is only a partial fix.
   French names (type A French legal forms + number shift, type B French word swap).
 - Local end-to-end test (train_frac 0.01, 5% of France): 12,921 pseudo S1, 2.93 matches/S1, 1.91 distractors/S1;
   2,909 French synthetic siblings; blocking recall 0.9986; validation (real only) F0.5 0.9904.
-- Kaggle: SEED 9, train_frac 0.25, pseudo_frac 0.5, seed-202 bundle attached. Leaderboard: _pending_
+- Kaggle: SEED 9, train_frac 0.25, pseudo_frac 0.5, seed-202 bundle attached, predict France only
+  (`predict_countries`; ~1h45m instead of ~3h20m). Final file = v9 France + v8 US/India
+  (`src/merge_countries.py`). Leaderboard: _pending_
