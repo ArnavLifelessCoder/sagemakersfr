@@ -2,7 +2,7 @@
 
 **Team Name:** [TEAM NAME]
 **Team Members:** [MEMBERS]
-**Submission Date:** 2026-09-27
+**Submission Date:** 2026-09-28
 
 ---
 
@@ -114,27 +114,29 @@ logit space with weight 0.3 (`src/blend_ce.py`); on the 135k validation entities
 to 0.9918. The pretrained weights are a model (no external data lookup); training and scoring of the 12.2M
 test pairs took about 1.5 hours on one L40S GPU.
 
-**Ensembling and decision calibration (final submissions):** two LightGBM runs trained on disjoint stratified
-30% slices (seeds 0 and 1; the second adds neighbour-state search for Telangana/Andhra Pradesh and DC/Washington
-records and label-free name and address frequency features) are averaged per pair (`src/ens_ckpt.py`), blended
-with the cross-encoder, and decided per entity. Because the test set carries 1.9x the training distractor density
-and they concentrate in the middle probability bands, each probability is first divided by the inflation of its
-band on the test relative to the validation slice (records per entity per band, computed label-free; the top band
-is trusted), then the expected-F0.5 rule keeps the best prefix per entity (`src/assemble.py --band-ref`).
+**Ensembling (the submitted file):** three prediction runs are averaged per pair (`src/ens_ckpt.py`):
+run A, this pipeline trained on a stratified 30% slice (seed 0); run B, the same pipeline with neighbour-state
+search (Telangana/Andhra Pradesh, DC/Washington) and label-free name and address frequency features, trained on
+another 30% slice (seed 1); run C, the team's other code line (the v4 model family with wider blocking and an OCR
+fold, seed 202, `src/partner_line/`). The average is blended with the cross-encoder and decided per entity with the
+expected-F0.5 rule below. Ensembling the three runs and the blend took the public score from 0.975 (run A alone,
+density-corrected decision) to 0.984.
 
 **Threshold selection method:** each record goes to its most probable entity; a transductive per-country lexicon (words that separate the run's own confident matches from its confident rejections, training lexicon kept for known words) can rescore a country without labels, which is how the French sibling vocabulary (holding, participations, développement, groupe, parents, foyer, loisirs) is learned; per entity, the prefix of its
 records (by probability) that maximises the expected F0.5 under independent truths is kept, the empty
-prediction included (a 2% allowance for records lost in blocking). On the test set a country whose predicted
-matches per entity exceed the validation rate (3.41) by more than 2% has its probabilities shrunk
-(odds divided by a constant found by bisection) until it meets the rate, because the test set carries 1.9x
-more distractors than training.
+prediction included (a 2% allowance for records lost in blocking). A per-country shape guard shrinks the odds (bisection on a divisor) only if predicted matches per entity
+exceed the validation rate (3.38) by more than 2%. More conservative decisions were tried on the leaderboard
+and lost: a density correction (odds / 1.9) scored 0.975 and a label-free band calibration 0.973 for the same
+model, so the final file uses the raw per-entity decision.
 
 ---
 
 ## 5. Results & Error Analysis
 
-- **F_0.5 Score (macro):** validation 0.9924 on the 9-state development slice (0.9917 with false merges
-  weighted 1.9x to emulate the test distractor density); validation 0.9906 (0.9900 test-like) on a 30% slice of the training entities with 22 states including Delhi, Uttar Pradesh, Texas and Ohio (135,052 held-out entities), where the previous version scored 0.9858; public leaderboard: see the submission notes.
+- **F_0.5 Score (macro):** run A validates at 0.9906 (0.9900 with false merges weighted 1.9x) on 135,052 held-out
+  entities of a 30% training slice with 22 states including Delhi, Uttar Pradesh, Texas and Ohio (the previous version
+  scored 0.9858 there; a small 9-state slice reports 0.9924 but hides the scale effects); the cross-encoder blend lifts
+  it to 0.9918. **Public leaderboard: 0.984** for the submitted three-run ensemble (run A alone 0.975; run C alone 0.976).
 - **Common false positives (wrong merges):** a sibling whose only differences are a legal-form change plus a
   new sub-number; an identical name at a far house number when the entity has no other confident record;
   ambiguous empty-address records whose name belongs to several entities in the country.

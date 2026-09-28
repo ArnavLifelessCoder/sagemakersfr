@@ -21,3 +21,4 @@ dump_*/
 *.log
 *.out.bak
 solution/**/__pycache__/
+pkg/

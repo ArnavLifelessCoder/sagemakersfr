@@ -1,0 +1,7 @@
+# Cross-encoder only (src/cross_encoder.py), CUDA GPU. Used: one NVIDIA L40S, Python 3.12.
+torch==2.8.0
+transformers==5.17.0
+sentencepiece>=0.2.0
+protobuf>=4.25
+pandas>=2.2
+pyarrow>=18
